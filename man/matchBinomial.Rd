@@ -19,7 +19,7 @@ records binomial which are also present in the IUCN data set.
 to contain binomial records present in NHM data
 }
 \description{
-\code(matchBinomial) reduces both data frames to contain only records which
+\code{matchBinomial} reduces both data frames to contain only records which
 both contain. Aims to aid with the speed of subsequent calculations.
 }
 \examples{
