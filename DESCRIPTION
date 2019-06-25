@@ -15,6 +15,8 @@ Description: Extends the sf package to include some
     part of a Masters thesis to explore feasibility
     of creating a pipeline for geospatial operations
     on historical records from museum collections. 
+    Please note that the datastorr functionality is not avaliable for R version
+    3.6.0 and higher. 
 License: What license it uses NEED TO WORK THIS OUT PROBS MIT, BUT SEEING AS I DIDNT WRITE ALL THIS FROM SCRATCH WHO KNOWS
 Encoding: UTF-8
 LazyData: true

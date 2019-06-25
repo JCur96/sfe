@@ -14,3 +14,11 @@
 # it would be exceedingly sensible to just have convex hull calcs just update
 # geometry column, which would streamline several downstream functions, and
 # reduce data volume
+usethis::edit_r_environ()
+devtools::install_github("JCur96/sfe")
+# datastorr is not avaliable for R version 3.6.0!
+# so I will have to install an older version to check if this works
+# and implement testing on it obviosuly
+# Should make a note of this in the description file I think
+datastorr::mydata_versions()
+
