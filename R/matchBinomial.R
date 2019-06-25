@@ -1,6 +1,6 @@
 #' Finds matching binomials (records) between NHM and IUCN data frames
 #'
-#' \code(matchBinomial) reduces both data frames to contain only records which
+#' \code{matchBinomial} reduces both data frames to contain only records which
 #' both contain. Aims to aid with the speed of subsequent calculations.
 #'
 #' @param x An object of class sf containing NHM data with binomial column
