@@ -1,0 +1,31 @@
+Package: sfe
+Title: Adds Useful Tools for Ecologists to the sf Package
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Jake",
+           family = "Curry",
+           role = c("aut", "cre"),
+           email = "jake.curry96@gmail.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Extends the sf package to include some
+    useful tools for ecologists. Tools include creation
+    of and clipping convex hulls to landmasses, version 
+    control of data and calculating percentage overlap 
+    between hulls of the same species. Work done as 
+    part of a Masters thesis to explore feasibility
+    of creating a pipeline for geospatial operations
+    on historical records from museum collections. 
+License: What license it uses NEED TO WORK THIS OUT PROBS MIT, BUT SEEING AS I DIDNT WRITE ALL THIS FROM SCRATCH WHO KNOWS
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    ggplot2,
+    tidyverse,
+    maps,
+    rgeos,
+    lwgeom,
+    rgdal,
+    rnaturalearth,
+Depends:
+    sf
+RoxygenNote: 6.1.1
