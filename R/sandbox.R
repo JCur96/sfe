@@ -23,11 +23,11 @@
 # # Should make a note of this in the description file I think
 # datastorr::mydata_versions()
 #
-#noquote(datastorr::autogenerate(repo = 'JCur96/sfe', read.csv, filename = 'nhmPangolinData.csv'))
+# noquote(datastorr::autogenerate(repo = 'JCur96/sfe', 'read.csv', filename = 'nhmPangolinData.csv'))
 # #
 # usethis::edit_r_environ()
 
-#sfe::mydata_release('Testing a first release of the data as part of a package', 'nhmPangolinData.csv')
+# sfe::mydata_release('Testing a first release of the data as part of a package', 'nhmPangolinData.csv')
 #sfe::mydata()
 #getwd()
 #datastorr::github_release_info(repo = 'JCur96/sfe', read.csv())
