@@ -17,8 +17,8 @@
 ##'
 ##' @export
 mydata <- function(version = NULL, path = NULL) {
-     datastorr::github_release_get(mydata_info(path), version)
- }
+           datastorr::github_release_get(mydata_info(path), version)
+         }
 
 ##' @export
 ##' @rdname mydata
@@ -30,28 +30,28 @@ mydata <- function(version = NULL, path = NULL) {
 ##'   for the most recent github version.
 ##'
 mydata_versions <- function(local = TRUE, path = NULL) {
-     datastorr::github_release_versions(mydata_info(path), local)
- }
+           datastorr::github_release_versions(mydata_info(path), local)
+         }
 
 ##' @export
 ##' @rdname mydata
 mydata_version_current <- function(local = TRUE, path = NULL) {
-     datastorr::github_release_version_current(mydata_info(path), local)
- }
+           datastorr::github_release_version_current(mydata_info(path), local)
+         }
 
 ##' @export
 ##' @rdname mydata
 mydata_del <- function(version, path = NULL) {
-     datastorr::github_release_del(mydata_info(path), version)
- }
+           datastorr::github_release_del(mydata_info(path), version)
+         }
 
 ## Core data:
 mydata_info <- function(path) {
-     datastorr::github_release_info("JCur96/sfe",
-                                                                        filename = "nhmPangolinData.csv",
-                                                                        read = read.csv,
-                                                                        path = path)
- }
+           datastorr::github_release_info("JCur96/sfe",
+                                                                                filename = NULL,
+                                                                                read = read.csv,
+                                                                                path = path)
+         }
 
 ##' Maintainer-only function for releasing data.  This will look at
 ##' the version in the DESCRIPTION file and make a data release if the
@@ -63,5 +63,5 @@ mydata_info <- function(path) {
 ##' @param path Path to the data (see \\code{\\link{sfe}}).
 ##' @export
 mydata_release <- function(..., path = NULL) {
-     datastorr::github_release_create(mydata_info(path), ...)
- }
+           datastorr::github_release_create(mydata_info(path), ...)
+         }

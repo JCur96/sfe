@@ -22,12 +22,17 @@
 # # and implement testing on it obviosuly
 # # Should make a note of this in the description file I think
 # datastorr::mydata_versions()
-#
-# noquote(datastorr::autogenerate(repo = 'JCur96/sfe', 'read.csv', filename = 'nhmPangolinData.csv'))
-# #
 # usethis::edit_r_environ()
-
-# sfe::mydata_release('Testing a first release of the data as part of a package', 'nhmPangolinData.csv')
+# datastorr::github_release_info("JCur96/sfe",
+#                                filename = "nhmPangolinData.csv",
+#                                read = read.csv,
+#                                path = NULL)
+# sfe::mydata()
+# ?datastorr::datastorr_path()
+# sfe::mydata_release('Testing to see if this worked')
+#sfe::mydata_release('Testing a first release of the data as part of a package', 'nhmPangolinData.csv')
 #sfe::mydata()
 #getwd()
 #datastorr::github_release_info(repo = 'JCur96/sfe', read.csv())
+# ?datastorr::autogenerate
+# noquote(datastorr::autogenerate(repo = 'JCur96/sfe', 'read.csv'))
