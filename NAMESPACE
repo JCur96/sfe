@@ -2,6 +2,7 @@
 
 export(addError)
 export(calculateOverlaps)
+export(centroidEdgeDistance)
 export(clipHullsToLand)
 export(correctColName)
 export(inReadOld)
