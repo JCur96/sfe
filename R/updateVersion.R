@@ -26,7 +26,7 @@ updateVersion <- function() {
   writeLines(lines, Desc)
   close(Desc)
   print('IMPORTANT!
-  Please mate note of whether the version update is due to changes to
+  Please make note of whether the version update is due to changes to
         data or because of updates made to the code in the package in your
         commit message'/n/n/n)
 
