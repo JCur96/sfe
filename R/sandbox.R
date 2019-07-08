@@ -39,3 +39,5 @@
 #' set up the auth token manaully beforehand, you get a bad browser request otherwise
 # sfe::mydata_release('Testing a first release of the data as part of a package', 'data/nhmPangolinData.csv')
 # sfe::mydata_versions(local=F)
+
+
