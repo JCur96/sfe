@@ -25,6 +25,7 @@ for (var in unique(x$binomial)) {
     subsetOfDf$Percent_overlap <- 1
     }
   output <- rbind(output, subsetOfDf)
-  }
+}
+  output$Percent_overlap <- as.integer(output$Percent_overlap)
   return(output)
 }
