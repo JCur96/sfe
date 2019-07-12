@@ -27,5 +27,6 @@ for (var in unique(x$binomial)) {
   output <- rbind(output, subsetOfDf)
 }
   output$Percent_overlap <- as.integer(output$Percent_overlap)
+  names(output)[names(output) == 'Percent_overlap'] <- 'binomial_overlap'
   return(output)
 }

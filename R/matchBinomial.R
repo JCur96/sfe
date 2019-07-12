@@ -13,12 +13,12 @@
 #' matchBinomial()
 #' @export
 matchBinomial <- function(x, y) {
-  binomList <- df1$binomial
+  binomList <- x$binomial
   y <- y %>% filter(binomial %in% binomList)
   x <- x %>% filter(binomial %in% y$binomial)
   return(x)
   # return(y)
   #assign('mydata',df1,envir=.GlobalEnv)
-  assign('IUCNData', y, envir=.GlobalEnv)
+  assign('IUCN', y, envir=.GlobalEnv)
 }
 

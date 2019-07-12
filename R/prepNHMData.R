@@ -6,7 +6,7 @@
 #' \code{binomial} column are replaced with \code{_}
 #'
 
-#' @param ... User input as prompted by the terminal
+#' @param x a csv file containing NHM records
 #' @return An object of class sf (a data frame) with a column renamed to
 #' \code{binomial}, with binomial names underscorred, filtered to exclude NA
 #' values.
@@ -18,17 +18,18 @@
 #' YourIndexHere
 #'
 #' @export
-prepNHMData <- function() {
-  path <- readline(prompt = 'please enter path to NHM data: ')
-  path <- file.path(path)
-  x <- read.csv(path, header = T)
-  x <- st_as_sf(x)
+prepNHMData <- function(x) {
+  library(dplyr)
   print(colnames(x))
   colToChange <- readline(prompt = 'please enter column index to rename to binomial: ')
   colToChange <- as.numeric(colToChange)
   colnames(x)[colToChange] <- 'binomial'
-  x <- x %>% filter(Longitude !=is.na(Longitude) & Latitude !=is.na(Latitude)
-                      & Locality != '' & binomial != '')
+  colToChange <- readline(prompt = 'please enter column index to rename to Locality: ')
+  colToChange <- as.numeric(colToChange)
+  colnames(x)[colToChange] <- 'Locality'
+  x <- x %>%
+    filter(Longitude != is.na(Longitude)
+           & Latitude !=is.na(Latitude) & Locality !='' & binomial != '')
   x$binomial <- gsub(' ', '_', x$binomial)
   x <- st_as_sf(x, coords = c("Longitude", "Latitude"), crs = 4326)
   return(x)
