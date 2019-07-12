@@ -257,3 +257,4 @@ distanceModel2 <- glmer(distance ~ binomial + (1|decade),
 # WILL BE USING GGPLOT FOR THIS BUT FOR STARTERS LETS JUST BASE PLOT 
 plot(binomialModel2)
 plot(distanceModel2)
+```
