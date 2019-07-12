@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-# sfe (Simple Feature, Ecology)
+# sfe (Simple Features Ecology)
 ## A Walkthrough Guide With a Test Case
 
 ### A Breif Note about Dependencies
