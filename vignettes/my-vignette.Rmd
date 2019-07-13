@@ -1,6 +1,6 @@
 ---
-title: "my-vignette"
-output: rmarkdown::html_vignette
+title: "sfe: Simple Features Ecology"
+output: html_document #rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{my-vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -86,18 +86,20 @@ several functions which are then used for data management, and then making an
 initial release of the data. 
 I will give a brief example of how to use those functions here out of 
 interest; 
-# ```{r}
-# # First it is advisable that you check if you've got the data already
-# sfe::mydata_versions()
-# # If not, you can check what versions are avaliable on GitHub
-# sfe::mydata_versions(local=F)
-# # From those you can choose a version you wish to work with
-# myFakePangolinData <- sfe::mydata(version = '0.0.1')
-# # Once you've made any edits to the data you can upload it to version control
-# sfe::updateVersion()
-# # UpdateVersion helps you update the description file before you make a new release
-# sfe::mydata_release()
-# ```
+```{r}
+# First it is advisable that you check if you've got the data already
+sfe::mydata_versions()
+# If not, you can check what versions are avaliable on GitHub
+sfe::mydata_versions(local=F)
+# From those you can choose a version you wish to work with
+myFakePangolinData <- sfe::mydata(version = '0.0.1')
+# Once you've made any edits to the data you can upload it to version control
+sfe::updateVersion()
+# UpdateVersion helps you update the description file before you make a new release
+sfe::mydata_release()
+```
+The errors you see here are because I'm not giving the functions the correct 
+input, but I promise they d0 work when they have correct input. 
 
 First I read in the data from both Natural History Museum(NHM) and the IUCN.
 ```{r}
@@ -198,14 +200,16 @@ generating functions yet or not.
 ```{r}
 # For speed and viewability we strip out all the extraneous stuff, 
 # we just need the species name and the geometry 
-View(NHM_Pangolins)
 myvars <- c('binomial', 'geometry')
 IUCN <- IUCN[myvars]
 IUCN <- resolveIUCNGeom(IUCN)
-View(IUCN)
-
+IUCN <- st_as_sf(IUCN)
+class(IUCN)
+head(IUCN)
+# NHM_Pangolins$Percent_overlap <- NA
+head(NHM_Pangolins)
 NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
-View(NHM_Pangolins)
+head(NHM_Pangolins)
 ```
 
 The above function will return the NHM data frame with a `Percent_overlap` column
@@ -218,6 +222,7 @@ which can be created and tailored using the following functions;
 # This first function creates convex hulls, without any clipping to landmasses
 NHM_Pangolins <- makeConvexHulls(NHM_Pangolins)
 # And this function takes those hulls and clips them to landmasses 
+head(NHM_Pangolins)
 NHM_Pangolins <- clipHullsToLand(NHM_Pangolins)
 #If you know you want hulls which are clipped to landmasses from the start you 
 # can use the following function
@@ -252,10 +257,17 @@ p = ggplot(data = landMap) +
 print(p)
 ```
 
+Similarly I can calculate the percentage overlap between convex hulls and using 
+the `calculateOverlaps` function from earlier. 
+```{r}
+NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
+head(NHM_Pangolins)
+```
 This function changes the `Percent_overlap` column to `binomial_overlap` as well
 as flatten the data.
 ```{r}
 NHM_Pangolins <- binomialOverlap(NHM_Pangolins)
+head(NHM_Pangolins)
 ```
 
 I have also created a function for calculating the distance between the centroid 
@@ -264,6 +276,7 @@ be of interest with regards to analysis and modelling, and does not requrie any
 flattening to use. 
 ```{r}
 NHM_Pangolins <- centroidEdgeDistance(NHM_Pangolins, IUCN)
+head(NHM_Pangolins)
 ```
 
 This returns the NHM data frame with added an added distance column (and a 

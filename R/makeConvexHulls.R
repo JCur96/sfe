@@ -25,8 +25,10 @@ makeConvexHulls <- function(x) {
     subsetOfDf <- x[x$binomial == var,]
     subsetOfDf$geometry <- st_convex_hull(st_combine(subsetOfDf$geometry))
     # making sure crs is set
-    subsetOfDf <- st_set_crs(subsetOfDf, 4326)
+    # subsetOfDf <- st_set_crs(subsetOfDf, 4326)
+    subsetOfDf <- st_transform(subsetOfDf, 4326)
     output <- rbind(output, subsetOfDf)
+    # print(st_is_valid(output))
   }
   return(output)
 }

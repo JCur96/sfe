@@ -28,9 +28,9 @@ centroidEdgeDistance <- function(x, y) {
     # finds the centroid (point geom of convex hull)
     centroid <- st_centroid(subsetOfDf$geometry)
     edgeDist <- st_distance(centroid, subsetOfIUCN$geometry)
-    edgeDist <- drop_units(edgeDist)
+    edgeDist <- units::drop_units(edgeDist)
     # allows for handling of cases of zero overlap
-    if (is_empty(edgeDist) == T) {
+    if (purrr::is_empty(edgeDist) == T) {
       # as it otherwise returns a list of length zero, which cannot be appended to a df
       edgeDist <- c(0)
     }

@@ -23,12 +23,17 @@ clipHullsToLand <- function(x) {
   # making a world map of the land
   landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>%
     st_union()
-  #landMap <- st_transform(landMap, 2163)
-  #x <- st_transform(x, 2163)
+  landMap <- st_transform(landMap, 2163)
+  # print(st_is_valid(landMap))
+  x <- st_transform(x, 2163)
   output <- c()
   for (var in unique(x$binomial)) {
+    # print(var)
+    # print(str(x))
+    #print(st_is_valid(output))
     subsetOfDf <- x[x$binomial == var,]
-    clippedHull <-  suppressMessages(st_intersection(subsetOfDf$geometry, landMap))
+    clippedHull <-  st_intersection(lwgeom::st_make_valid(subsetOfDf$geometry), lwgeom::st_make_valid(landMap))
+    # clippedHull <-  suppressMessages(st_intersection(subsetOfDf$geometry, landMap))
     # ocean <- st_difference(subsetOfDf$convex_hull, landMap)
     if (purrr::is_empty(clippedHull)) {
       # error handling here
@@ -40,6 +45,7 @@ clipHullsToLand <- function(x) {
       subsetOfDf$geometry <- clippedHull
 
     }
+    subsetOfDf <- st_transform(subsetOfDf, 4326)
     output <- rbind(output, subsetOfDf)
     output <- st_transform(output, 4326)
   }

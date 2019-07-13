@@ -4,13 +4,16 @@
 \alias{plotMaps}
 \title{Plots maps of each species in a binomial list}
 \usage{
-plotMaps(x, y)
+plotMaps(x, y, path = NULL)
 }
 \arguments{
 \item{x}{An object of class sf, sfc or sfg containing Natural History Museum
 records}
 
 \item{y}{An object of class sf, sfc or sfg containing IUCN records}
+
+\item{path}{path to destination folder entered as a string. This must have
+been created before using this function otherwise you will get an error.}
 }
 \value{
 plots in the dir specified by user input
