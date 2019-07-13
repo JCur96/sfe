@@ -1,6 +1,6 @@
 ---
 title: "sfe: Simple Features Ecology"
-output: html_document #rmarkdown::html_vignette
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{my-vignette}
   %\VignetteEngine{knitr::rmarkdown}
