@@ -129,38 +129,45 @@ NHM_Pangolins <- prepNHMData(NHM_Pangolins, 6)
 #>  [7] "Country"            "Locality"           "Extent_km"         
 #> [10] "Certainty"          "Type"               "X"                 
 #> [13] "binomial_overlap"   "distance"           "distance2"         
-#> [16] "geometry"
+#> [16] "binomial_overlap.1" "geometry"
 #> Column name `binomial` must not be duplicated.
 #> Use .name_repair to specify repair.
 # To prove that this has done what we want, we can view the first ten rows
 head(NHM_Pangolins)
-#> Simple feature collection with 6 features and 15 fields
+#> Simple feature collection with 6 features and 16 fields
 #> geometry type:  GEOMETRYCOLLECTION
 #> dimension:      XY
-#> bbox:           xmin: -6224372 ymin: 7705154 xmax: -297530.7 ymax: 10520410
+#> bbox:           xmin: -4678013 ymin: 525265.6 xmax: 9871394 ymax: 11501860
 #> epsg (SRID):    2163
 #> proj4string:    +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs
-#>   RegistrationNumber Year Decade           binomial TypeStatus Continent
-#> 1         72.11.13.1 1868   1860 Manis_pentadactyla       skin      Asia
-#> 2         72.11.13.4 1867   1860 Manis_pentadactyla       skin      Asia
-#> 3         72.11.13.7 1867   1860 Manis_pentadactyla       skin      Asia
-#> 4         72.11.13.8 1868   1860 Manis_pentadactyla       skin      Asia
-#> 5           7.7.3.25 1900   1900 Manis_pentadactyla       skin      Asia
-#> 6          21.8.2.27 1920   1920 Manis_pentadactyla       skin      Asia
-#>   Country Locality Extent_km Certainty Type X binomial_overlap distance
-#> 1   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 2   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 3   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 4   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 5   China  Shantou     50.30        75  2.3                  1 57550.33
-#> 6   India    Assam     92.64        75  2.2                  1 57550.33
-#>   distance2                       geometry
-#> 1        NA GEOMETRYCOLLECTION (POINT (...
-#> 2        NA GEOMETRYCOLLECTION (POINT (...
-#> 3        NA GEOMETRYCOLLECTION (POINT (...
-#> 4        NA GEOMETRYCOLLECTION (POINT (...
-#> 5        NA GEOMETRYCOLLECTION (POINT (...
-#> 6        NA GEOMETRYCOLLECTION (POINT (...
+#>    RegistrationNumber Year Decade            binomial TypeStatus Continent
+#> 81         35.12.18.3 1935   1930    Smutsia_gigantea   skeleton    Africa
+#> 82            61.1095 1905   1900    Smutsia_gigantea       skin    Africa
+#> 83            61.1096 1913   1910    Smutsia_gigantea       skin    Africa
+#> 84             no reg 1946   1940    Smutsia_gigantea       skin    Africa
+#> 74        27.12.1.203 1927   1920 Manis_crassicaudata       skin      Asia
+#> 75           34.3.4.1 1933   1930 Manis_crassicaudata       skin      Asia
+#>                             Country                Locality Extent_km
+#> 81                      South Sudan Northern Bahr el Ghazal    145.39
+#> 82                           Uganda                   Buddu      4.92
+#> 83 Democratic Republic of the Congo               Lake Kivu     62.79
+#> 84                     Sierra Leone             Sulima (Nr)      3.08
+#> 74                          Vietnam                 Bac-Kan     66.71
+#> 75                            Burma                  Ho Khu      0.05
+#>    Certainty Type X binomial_overlap distance distance2 binomial_overlap.1
+#> 81       100  2.2                  1 419829.1        NA                  1
+#> 82        25  2.3                  1 419829.1        NA                  1
+#> 83        25  2.7                  1 419829.1        NA                  1
+#> 84        75  3.5                  1 419829.1        NA                  1
+#> 74       100  2.2                  1      0.0        NA                  1
+#> 75        75  3.3                  1      0.0        NA                  1
+#>                          geometry
+#> 81 GEOMETRYCOLLECTION (POINT (...
+#> 82 GEOMETRYCOLLECTION (POINT (...
+#> 83 GEOMETRYCOLLECTION (POINT (...
+#> 84 GEOMETRYCOLLECTION (POINT (...
+#> 74 GEOMETRYCOLLECTION (POINT (...
+#> 75 GEOMETRYCOLLECTION (POINT (...
 # So it's not quite ready yet as it still contains a lot of missing values.
 # Filtering out records which don't have a decade should help. 
 # We also don't really need all the notes at the moment, so we can drop that column
@@ -168,33 +175,40 @@ NHM_Pangolins <- NHM_Pangolins %>% filter(Decade != is.na(Decade))
 NHM_Pangolins <- NHM_Pangolins %>% select(-c(NOTES))
 #> Error in map_lgl(.x, .p, ...): object 'NOTES' not found
 head(NHM_Pangolins)
-#> Simple feature collection with 6 features and 15 fields
+#> Simple feature collection with 6 features and 16 fields
 #> geometry type:  GEOMETRYCOLLECTION
 #> dimension:      XY
-#> bbox:           xmin: -6224372 ymin: 7705154 xmax: -297530.7 ymax: 10520410
+#> bbox:           xmin: -4678013 ymin: 525265.6 xmax: 9871394 ymax: 11501860
 #> epsg (SRID):    2163
 #> proj4string:    +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs
-#>   RegistrationNumber Year Decade           binomial TypeStatus Continent
-#> 1         72.11.13.1 1868   1860 Manis_pentadactyla       skin      Asia
-#> 2         72.11.13.4 1867   1860 Manis_pentadactyla       skin      Asia
-#> 3         72.11.13.7 1867   1860 Manis_pentadactyla       skin      Asia
-#> 4         72.11.13.8 1868   1860 Manis_pentadactyla       skin      Asia
-#> 5           7.7.3.25 1900   1900 Manis_pentadactyla       skin      Asia
-#> 6          21.8.2.27 1920   1920 Manis_pentadactyla       skin      Asia
-#>   Country Locality Extent_km Certainty Type X binomial_overlap distance
-#> 1   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 2   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 3   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 4   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 5   China  Shantou     50.30        75  2.3                  1 57550.33
-#> 6   India    Assam     92.64        75  2.2                  1 57550.33
-#>   distance2                       geometry
-#> 1        NA GEOMETRYCOLLECTION (POINT (...
-#> 2        NA GEOMETRYCOLLECTION (POINT (...
-#> 3        NA GEOMETRYCOLLECTION (POINT (...
-#> 4        NA GEOMETRYCOLLECTION (POINT (...
-#> 5        NA GEOMETRYCOLLECTION (POINT (...
-#> 6        NA GEOMETRYCOLLECTION (POINT (...
+#>   RegistrationNumber Year Decade            binomial TypeStatus Continent
+#> 1         35.12.18.3 1935   1930    Smutsia_gigantea   skeleton    Africa
+#> 2            61.1095 1905   1900    Smutsia_gigantea       skin    Africa
+#> 3            61.1096 1913   1910    Smutsia_gigantea       skin    Africa
+#> 4             no reg 1946   1940    Smutsia_gigantea       skin    Africa
+#> 5        27.12.1.203 1927   1920 Manis_crassicaudata       skin      Asia
+#> 6           34.3.4.1 1933   1930 Manis_crassicaudata       skin      Asia
+#>                            Country                Locality Extent_km
+#> 1                      South Sudan Northern Bahr el Ghazal    145.39
+#> 2                           Uganda                   Buddu      4.92
+#> 3 Democratic Republic of the Congo               Lake Kivu     62.79
+#> 4                     Sierra Leone             Sulima (Nr)      3.08
+#> 5                          Vietnam                 Bac-Kan     66.71
+#> 6                            Burma                  Ho Khu      0.05
+#>   Certainty Type X binomial_overlap distance distance2 binomial_overlap.1
+#> 1       100  2.2                  1 419829.1        NA                  1
+#> 2        25  2.3                  1 419829.1        NA                  1
+#> 3        25  2.7                  1 419829.1        NA                  1
+#> 4        75  3.5                  1 419829.1        NA                  1
+#> 5       100  2.2                  1      0.0        NA                  1
+#> 6        75  3.3                  1      0.0        NA                  1
+#>                         geometry
+#> 1 GEOMETRYCOLLECTION (POINT (...
+#> 2 GEOMETRYCOLLECTION (POINT (...
+#> 3 GEOMETRYCOLLECTION (POINT (...
+#> 4 GEOMETRYCOLLECTION (POINT (...
+#> 5 GEOMETRYCOLLECTION (POINT (...
+#> 6 GEOMETRYCOLLECTION (POINT (...
 IUCN <- prepIUCNData(IUCN)
 # head(IUCN)
 ```
@@ -231,33 +245,40 @@ NHM_Pangolins <- NHM_Pangolins %>% rename(Extent_km = Extent..m.)
 #> Error in .f(.x[[i]], ...): object 'Extent..m.' not found
 NHM_Pangolins <- addError(NHM_Pangolins)
 head(NHM_Pangolins)
-#> Simple feature collection with 6 features and 15 fields
+#> Simple feature collection with 6 features and 16 fields
 #> geometry type:  GEOMETRY
 #> dimension:      XY
-#> bbox:           xmin: 80.11534 ymin: 12.8766 xmax: 123.0893 ymax: 32.68449
+#> bbox:           xmin: -12.34561 ymin: -5.500799 xmax: 107.9588 ymax: 28.98995
 #> epsg (SRID):    4326
 #> proj4string:    +proj=longlat +datum=WGS84 +no_defs
-#>   RegistrationNumber Year Decade           binomial TypeStatus Continent
-#> 1         72.11.13.1 1868   1860 Manis_pentadactyla       skin      Asia
-#> 2         72.11.13.4 1867   1860 Manis_pentadactyla       skin      Asia
-#> 3         72.11.13.7 1867   1860 Manis_pentadactyla       skin      Asia
-#> 4         72.11.13.8 1868   1860 Manis_pentadactyla       skin      Asia
-#> 5           7.7.3.25 1900   1900 Manis_pentadactyla       skin      Asia
-#> 6          21.8.2.27 1920   1920 Manis_pentadactyla       skin      Asia
-#>   Country Locality Extent_km Certainty Type X binomial_overlap distance
-#> 1   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 2   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 3   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 4   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 5   China  Shantou     50.30        75  2.3                  1 57550.33
-#> 6   India    Assam     92.64        75  2.2                  1 57550.33
-#>   distance2                       geometry
-#> 1        NA POLYGON ((81.06553 30.73551...
-#> 2        NA MULTIPOLYGON (((119.8157 23...
-#> 3        NA MULTIPOLYGON (((119.8157 23...
-#> 4        NA POLYGON ((81.06553 30.73551...
-#> 5        NA MULTIPOLYGON (((119.7947 23...
-#> 6        NA MULTIPOLYGON (((119.5306 23...
+#>   RegistrationNumber Year Decade            binomial TypeStatus Continent
+#> 1         35.12.18.3 1935   1930    Smutsia_gigantea   skeleton    Africa
+#> 2            61.1095 1905   1900    Smutsia_gigantea       skin    Africa
+#> 3            61.1096 1913   1910    Smutsia_gigantea       skin    Africa
+#> 4             no reg 1946   1940    Smutsia_gigantea       skin    Africa
+#> 5        27.12.1.203 1927   1920 Manis_crassicaudata       skin      Asia
+#> 6           34.3.4.1 1933   1930 Manis_crassicaudata       skin      Asia
+#>                            Country                Locality Extent_km
+#> 1                      South Sudan Northern Bahr el Ghazal    145.39
+#> 2                           Uganda                   Buddu      4.92
+#> 3 Democratic Republic of the Congo               Lake Kivu     62.79
+#> 4                     Sierra Leone             Sulima (Nr)      3.08
+#> 5                          Vietnam                 Bac-Kan     66.71
+#> 6                            Burma                  Ho Khu      0.05
+#>   Certainty Type X binomial_overlap distance distance2 binomial_overlap.1
+#> 1       100  2.2                  1 419829.1        NA                  1
+#> 2        25  2.3                  1 419829.1        NA                  1
+#> 3        25  2.7                  1 419829.1        NA                  1
+#> 4        75  3.5                  1 419829.1        NA                  1
+#> 5       100  2.2                  1      0.0        NA                  1
+#> 6        75  3.3                  1      0.0        NA                  1
+#>                         geometry
+#> 1 POLYGON ((-12.21129 6.85111...
+#> 2 POLYGON ((-12.09439 7.06705...
+#> 3 POLYGON ((-12.14273 6.97747...
+#> 4 POLYGON ((-12.09285 7.06991...
+#> 5 MULTIPOLYGON (((86.38316 21...
+#> 6 MULTIPOLYGON (((85.30529 19...
 ```
 
 At this point I thought it would be useful to explore the data visually, both 
@@ -270,7 +291,7 @@ point-radius data.
 # when you run this funciton. This both saves computer time and memory, whilst 
 # allowing you as the user to browse all the maps at your leisure. 
 plotMaps(NHM_Pangolins, IUCN, path = '../output/point_radius_graphs/')
-#> Error in grid.newpage(): could not open file '../output/point_radius_graphs/Manis_pentadactyla.png'
+#> Error in grid.newpage(): could not open file '../output/point_radius_graphs/Smutsia_gigantea.png'
 
 # Here is an example of a single plot from that command, or how to plot just one
 # graph that is of interest
@@ -288,7 +309,7 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)
 print(p)
-#> Error in grid.newpage(): could not open file '../output/point_radius_graphs/Manis_pentadactyla.png'
+#> Error in grid.newpage(): could not open file '../output/point_radius_graphs/Smutsia_gigantea.png'
 ```
 
 Not all maps will seem to show anything interesting, but that is mostly due to 
@@ -315,75 +336,89 @@ head(IUCN)
 #> Simple feature collection with 6 features and 1 field
 #> geometry type:  MULTIPOLYGON
 #> dimension:      XY
-#> bbox:           xmin: -16.79792 ymin: -29.46794 xmax: 121.9982 ymax: 34.53434
+#> bbox:           xmin: -16.79792 ymin: -29.46794 xmax: 121.9982 ymax: 31.65709
 #> epsg (SRID):    4326
 #> proj4string:    +proj=longlat +datum=WGS84 +no_defs
-#>                  binomial                       geometry
-#> 1     Manis_crassicaudata MULTIPOLYGON (((80.21467 9....
-#> 2 Phataginus_tetradactyla MULTIPOLYGON (((7.1426 5.88...
-#> 3      Manis_pentadactyla MULTIPOLYGON (((120.7737 22...
-#> 4       Manis_culionensis MULTIPOLYGON (((116.9543 8....
-#> 5      Smutsia_temminckii MULTIPOLYGON (((25.8803 13....
-#> 6        Smutsia_gigantea MULTIPOLYGON (((8.733124 3....
+#>               binomial                       geometry
+#> 1 Phataginus_tricuspis MULTIPOLYGON (((-12.6341 11...
+#> 2       Manis_javanica MULTIPOLYGON (((116.3808 -8...
+#> 3     Smutsia_gigantea MULTIPOLYGON (((8.733124 3....
+#> 4   Smutsia_temminckii MULTIPOLYGON (((25.8803 13....
+#> 5    Manis_culionensis MULTIPOLYGON (((116.9543 8....
+#> 6   Manis_pentadactyla MULTIPOLYGON (((120.7737 22...
 # NHM_Pangolins$Percent_overlap <- NA
 head(NHM_Pangolins)
-#> Simple feature collection with 6 features and 15 fields
+#> Simple feature collection with 6 features and 16 fields
 #> geometry type:  GEOMETRY
 #> dimension:      XY
-#> bbox:           xmin: 80.11534 ymin: 12.8766 xmax: 123.0893 ymax: 32.68449
+#> bbox:           xmin: -12.34561 ymin: -5.500799 xmax: 107.9588 ymax: 28.98995
 #> epsg (SRID):    4326
 #> proj4string:    +proj=longlat +datum=WGS84 +no_defs
-#>   RegistrationNumber Year Decade           binomial TypeStatus Continent
-#> 1         72.11.13.1 1868   1860 Manis_pentadactyla       skin      Asia
-#> 2         72.11.13.4 1867   1860 Manis_pentadactyla       skin      Asia
-#> 3         72.11.13.7 1867   1860 Manis_pentadactyla       skin      Asia
-#> 4         72.11.13.8 1868   1860 Manis_pentadactyla       skin      Asia
-#> 5           7.7.3.25 1900   1900 Manis_pentadactyla       skin      Asia
-#> 6          21.8.2.27 1920   1920 Manis_pentadactyla       skin      Asia
-#>   Country Locality Extent_km Certainty Type X binomial_overlap distance
-#> 1   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 2   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 3   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 4   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 5   China  Shantou     50.30        75  2.3                  1 57550.33
-#> 6   India    Assam     92.64        75  2.2                  1 57550.33
-#>   distance2                       geometry
-#> 1        NA POLYGON ((81.06553 30.73551...
-#> 2        NA MULTIPOLYGON (((119.8157 23...
-#> 3        NA MULTIPOLYGON (((119.8157 23...
-#> 4        NA POLYGON ((81.06553 30.73551...
-#> 5        NA MULTIPOLYGON (((119.7947 23...
-#> 6        NA MULTIPOLYGON (((119.5306 23...
+#>   RegistrationNumber Year Decade            binomial TypeStatus Continent
+#> 1         35.12.18.3 1935   1930    Smutsia_gigantea   skeleton    Africa
+#> 2            61.1095 1905   1900    Smutsia_gigantea       skin    Africa
+#> 3            61.1096 1913   1910    Smutsia_gigantea       skin    Africa
+#> 4             no reg 1946   1940    Smutsia_gigantea       skin    Africa
+#> 5        27.12.1.203 1927   1920 Manis_crassicaudata       skin      Asia
+#> 6           34.3.4.1 1933   1930 Manis_crassicaudata       skin      Asia
+#>                            Country                Locality Extent_km
+#> 1                      South Sudan Northern Bahr el Ghazal    145.39
+#> 2                           Uganda                   Buddu      4.92
+#> 3 Democratic Republic of the Congo               Lake Kivu     62.79
+#> 4                     Sierra Leone             Sulima (Nr)      3.08
+#> 5                          Vietnam                 Bac-Kan     66.71
+#> 6                            Burma                  Ho Khu      0.05
+#>   Certainty Type X binomial_overlap distance distance2 binomial_overlap.1
+#> 1       100  2.2                  1 419829.1        NA                  1
+#> 2        25  2.3                  1 419829.1        NA                  1
+#> 3        25  2.7                  1 419829.1        NA                  1
+#> 4        75  3.5                  1 419829.1        NA                  1
+#> 5       100  2.2                  1      0.0        NA                  1
+#> 6        75  3.3                  1      0.0        NA                  1
+#>                         geometry
+#> 1 POLYGON ((-12.21129 6.85111...
+#> 2 POLYGON ((-12.09439 7.06705...
+#> 3 POLYGON ((-12.14273 6.97747...
+#> 4 POLYGON ((-12.09285 7.06991...
+#> 5 MULTIPOLYGON (((86.38316 21...
+#> 6 MULTIPOLYGON (((85.30529 19...
 NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
 #> Error in CPL_geos_op2(op, st_geometry(x), st_geometry(y)): Evaluation error: TopologyException: Input geom 0 is invalid: Self-intersection at or near point -5030615.1991173597 10299997.573691372 at -5030615.1991173597 10299997.573691372.
 head(NHM_Pangolins)
-#> Simple feature collection with 6 features and 15 fields
+#> Simple feature collection with 6 features and 16 fields
 #> geometry type:  GEOMETRY
 #> dimension:      XY
-#> bbox:           xmin: 80.11534 ymin: 12.8766 xmax: 123.0893 ymax: 32.68449
+#> bbox:           xmin: -12.34561 ymin: -5.500799 xmax: 107.9588 ymax: 28.98995
 #> epsg (SRID):    4326
 #> proj4string:    +proj=longlat +datum=WGS84 +no_defs
-#>   RegistrationNumber Year Decade           binomial TypeStatus Continent
-#> 1         72.11.13.1 1868   1860 Manis_pentadactyla       skin      Asia
-#> 2         72.11.13.4 1867   1860 Manis_pentadactyla       skin      Asia
-#> 3         72.11.13.7 1867   1860 Manis_pentadactyla       skin      Asia
-#> 4         72.11.13.8 1868   1860 Manis_pentadactyla       skin      Asia
-#> 5           7.7.3.25 1900   1900 Manis_pentadactyla       skin      Asia
-#> 6          21.8.2.27 1920   1920 Manis_pentadactyla       skin      Asia
-#>   Country Locality Extent_km Certainty Type X binomial_overlap distance
-#> 1   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 2   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 3   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 4   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 5   China  Shantou     50.30        75  2.3                  1 57550.33
-#> 6   India    Assam     92.64        75  2.2                  1 57550.33
-#>   distance2                       geometry
-#> 1        NA POLYGON ((81.06553 30.73551...
-#> 2        NA MULTIPOLYGON (((119.8157 23...
-#> 3        NA MULTIPOLYGON (((119.8157 23...
-#> 4        NA POLYGON ((81.06553 30.73551...
-#> 5        NA MULTIPOLYGON (((119.7947 23...
-#> 6        NA MULTIPOLYGON (((119.5306 23...
+#>   RegistrationNumber Year Decade            binomial TypeStatus Continent
+#> 1         35.12.18.3 1935   1930    Smutsia_gigantea   skeleton    Africa
+#> 2            61.1095 1905   1900    Smutsia_gigantea       skin    Africa
+#> 3            61.1096 1913   1910    Smutsia_gigantea       skin    Africa
+#> 4             no reg 1946   1940    Smutsia_gigantea       skin    Africa
+#> 5        27.12.1.203 1927   1920 Manis_crassicaudata       skin      Asia
+#> 6           34.3.4.1 1933   1930 Manis_crassicaudata       skin      Asia
+#>                            Country                Locality Extent_km
+#> 1                      South Sudan Northern Bahr el Ghazal    145.39
+#> 2                           Uganda                   Buddu      4.92
+#> 3 Democratic Republic of the Congo               Lake Kivu     62.79
+#> 4                     Sierra Leone             Sulima (Nr)      3.08
+#> 5                          Vietnam                 Bac-Kan     66.71
+#> 6                            Burma                  Ho Khu      0.05
+#>   Certainty Type X binomial_overlap distance distance2 binomial_overlap.1
+#> 1       100  2.2                  1 419829.1        NA                  1
+#> 2        25  2.3                  1 419829.1        NA                  1
+#> 3        25  2.7                  1 419829.1        NA                  1
+#> 4        75  3.5                  1 419829.1        NA                  1
+#> 5       100  2.2                  1      0.0        NA                  1
+#> 6        75  3.3                  1      0.0        NA                  1
+#>                         geometry
+#> 1 POLYGON ((-12.21129 6.85111...
+#> 2 POLYGON ((-12.09439 7.06705...
+#> 3 POLYGON ((-12.14273 6.97747...
+#> 4 POLYGON ((-12.09285 7.06991...
+#> 5 MULTIPOLYGON (((86.38316 21...
+#> 6 MULTIPOLYGON (((85.30529 19...
 ```
 
 The above function will return the NHM data frame with a `Percent_overlap` column
@@ -398,33 +433,40 @@ which can be created and tailored using the following functions;
 NHM_Pangolins <- makeConvexHulls(NHM_Pangolins)
 # And this function takes those hulls and clips them to landmasses 
 head(NHM_Pangolins)
-#> Simple feature collection with 6 features and 15 fields
+#> Simple feature collection with 6 features and 16 fields
 #> geometry type:  POLYGON
 #> dimension:      XY
-#> bbox:           xmin: 75.90632 ymin: 9.942344 xmax: 125.8511 ymax: 36.37283
+#> bbox:           xmin: -12.34561 ymin: -5.500799 xmax: 107.9588 ymax: 28.98995
 #> epsg (SRID):    4326
 #> proj4string:    +proj=longlat +datum=WGS84 +no_defs
-#>   RegistrationNumber Year Decade           binomial TypeStatus Continent
-#> 1         72.11.13.1 1868   1860 Manis_pentadactyla       skin      Asia
-#> 2         72.11.13.4 1867   1860 Manis_pentadactyla       skin      Asia
-#> 3         72.11.13.7 1867   1860 Manis_pentadactyla       skin      Asia
-#> 4         72.11.13.8 1868   1860 Manis_pentadactyla       skin      Asia
-#> 5           7.7.3.25 1900   1900 Manis_pentadactyla       skin      Asia
-#> 6          21.8.2.27 1920   1920 Manis_pentadactyla       skin      Asia
-#>   Country Locality Extent_km Certainty Type X binomial_overlap distance
-#> 1   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 2   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 3   China   Xiamen     46.93        50  2.3                  1 57550.33
-#> 4   China   Hainan    167.98       100  2.4                  1 57550.33
-#> 5   China  Shantou     50.30        75  2.3                  1 57550.33
-#> 6   India    Assam     92.64        75  2.2                  1 57550.33
-#>   distance2                       geometry
-#> 1        NA POLYGON ((109.0818 9.942344...
-#> 2        NA POLYGON ((109.0818 9.942344...
-#> 3        NA POLYGON ((109.0818 9.942344...
-#> 4        NA POLYGON ((109.0818 9.942344...
-#> 5        NA POLYGON ((109.0818 9.942344...
-#> 6        NA POLYGON ((109.0818 9.942344...
+#>   RegistrationNumber Year Decade            binomial TypeStatus Continent
+#> 1         35.12.18.3 1935   1930    Smutsia_gigantea   skeleton    Africa
+#> 2            61.1095 1905   1900    Smutsia_gigantea       skin    Africa
+#> 3            61.1096 1913   1910    Smutsia_gigantea       skin    Africa
+#> 4             no reg 1946   1940    Smutsia_gigantea       skin    Africa
+#> 5        27.12.1.203 1927   1920 Manis_crassicaudata       skin      Asia
+#> 6           34.3.4.1 1933   1930 Manis_crassicaudata       skin      Asia
+#>                            Country                Locality Extent_km
+#> 1                      South Sudan Northern Bahr el Ghazal    145.39
+#> 2                           Uganda                   Buddu      4.92
+#> 3 Democratic Republic of the Congo               Lake Kivu     62.79
+#> 4                     Sierra Leone             Sulima (Nr)      3.08
+#> 5                          Vietnam                 Bac-Kan     66.71
+#> 6                            Burma                  Ho Khu      0.05
+#>   Certainty Type X binomial_overlap distance distance2 binomial_overlap.1
+#> 1       100  2.2                  1 419829.1        NA                  1
+#> 2        25  2.3                  1 419829.1        NA                  1
+#> 3        25  2.7                  1 419829.1        NA                  1
+#> 4        75  3.5                  1 419829.1        NA                  1
+#> 5       100  2.2                  1      0.0        NA                  1
+#> 6        75  3.3                  1      0.0        NA                  1
+#>                         geometry
+#> 1 POLYGON ((29.27032 -5.50079...
+#> 2 POLYGON ((29.27032 -5.50079...
+#> 3 POLYGON ((29.27032 -5.50079...
+#> 4 POLYGON ((29.27032 -5.50079...
+#> 5 POLYGON ((80.34922 5.376645...
+#> 6 POLYGON ((80.34922 5.376645...
 NHM_Pangolins <- clipHullsToLand(NHM_Pangolins)
 #If you know you want hulls which are clipped to landmasses from the start you 
 # can use the following function
@@ -468,38 +510,38 @@ the `calculateOverlaps` function from earlier.
 ```r
 NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
 head(NHM_Pangolins)
-#> Simple feature collection with 6 features and 16 fields
+#> Simple feature collection with 6 features and 17 fields
 #> geometry type:  GEOMETRYCOLLECTION
 #> dimension:      XY
-#> bbox:           xmin: -4678013 ymin: 525265.6 xmax: 9871394 ymax: 11501860
+#> bbox:           xmin: -7094703 ymin: 7551174 xmax: 1675331 ymax: 11097370
 #> epsg (SRID):    2163
 #> proj4string:    +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs
-#>    RegistrationNumber Year Decade            binomial TypeStatus Continent
-#> 81         35.12.18.3 1935   1930    Smutsia_gigantea   skeleton    Africa
-#> 82            61.1095 1905   1900    Smutsia_gigantea       skin    Africa
-#> 83            61.1096 1913   1910    Smutsia_gigantea       skin    Africa
-#> 84             no reg 1946   1940    Smutsia_gigantea       skin    Africa
-#> 74        27.12.1.203 1927   1920 Manis_crassicaudata       skin      Asia
-#> 75           34.3.4.1 1933   1930 Manis_crassicaudata       skin      Asia
-#>                             Country                Locality Extent_km
-#> 81                      South Sudan Northern Bahr el Ghazal    145.39
-#> 82                           Uganda                   Buddu      4.92
-#> 83 Democratic Republic of the Congo               Lake Kivu     62.79
-#> 84                     Sierra Leone             Sulima (Nr)      3.08
-#> 74                          Vietnam                 Bac-Kan     66.71
-#> 75                            Burma                  Ho Khu      0.05
-#>    Certainty Type X binomial_overlap distance distance2 Percent_overlap
-#> 81       100  2.2                  1 422985.6        NA        43.75624
-#> 82        25  2.3                  1 422985.6        NA        43.75624
-#> 83        25  2.7                  1 422985.6        NA        43.75624
-#> 84        75  3.5                  1 422985.6        NA        43.75624
-#> 74       100  2.2                  1      0.0        NA        15.22015
-#> 75        75  3.3                  1      0.0        NA        15.22015
+#>    RegistrationNumber Year Decade           binomial TypeStatus Continent
+#> 70         72.11.13.1 1868   1860 Manis_pentadactyla       skin      Asia
+#> 71         72.11.13.4 1867   1860 Manis_pentadactyla       skin      Asia
+#> 72         72.11.13.7 1867   1860 Manis_pentadactyla       skin      Asia
+#> 73         72.11.13.8 1868   1860 Manis_pentadactyla       skin      Asia
+#> 74           7.7.3.25 1900   1900 Manis_pentadactyla       skin      Asia
+#> 75          21.8.2.27 1920   1920 Manis_pentadactyla       skin      Asia
+#>    Country Locality Extent_km Certainty Type X binomial_overlap distance
+#> 70   China   Hainan    167.98       100  2.4                  1 114219.2
+#> 71   China   Xiamen     46.93        50  2.3                  1 114219.2
+#> 72   China   Xiamen     46.93        50  2.3                  1 114219.2
+#> 73   China   Hainan    167.98       100  2.4                  1 114219.2
+#> 74   China  Shantou     50.30        75  2.3                  1 114219.2
+#> 75   India    Assam     92.64        75  2.2                  1 114219.2
+#>    distance2 binomial_overlap.1 Percent_overlap
+#> 70        NA                  1        99.81389
+#> 71        NA                  1        99.81389
+#> 72        NA                  1        99.81389
+#> 73        NA                  1        99.81389
+#> 74        NA                  1        99.81389
+#> 75        NA                  1        99.81389
 #>                          geometry
-#> 81 GEOMETRYCOLLECTION (POINT (...
-#> 82 GEOMETRYCOLLECTION (POINT (...
-#> 83 GEOMETRYCOLLECTION (POINT (...
-#> 84 GEOMETRYCOLLECTION (POINT (...
+#> 70 GEOMETRYCOLLECTION (POINT (...
+#> 71 GEOMETRYCOLLECTION (POINT (...
+#> 72 GEOMETRYCOLLECTION (POINT (...
+#> 73 GEOMETRYCOLLECTION (POINT (...
 #> 74 GEOMETRYCOLLECTION (POINT (...
 #> 75 GEOMETRYCOLLECTION (POINT (...
 ```
@@ -529,38 +571,38 @@ NHM_Pangolins <- binomialOverlap(NHM_Pangolins)
 #> Warning in if ((subsetOfDf$Percent_overlap > 0) == T) {: the condition has
 #> length > 1 and only the first element will be used
 head(NHM_Pangolins)
-#> Simple feature collection with 6 features and 16 fields
+#> Simple feature collection with 6 features and 17 fields
 #> geometry type:  GEOMETRYCOLLECTION
 #> dimension:      XY
-#> bbox:           xmin: -4678013 ymin: 525265.6 xmax: 9871394 ymax: 11501860
+#> bbox:           xmin: -7094703 ymin: 7551174 xmax: 1675331 ymax: 11097370
 #> epsg (SRID):    2163
 #> proj4string:    +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs
-#>    RegistrationNumber Year Decade            binomial TypeStatus Continent
-#> 81         35.12.18.3 1935   1930    Smutsia_gigantea   skeleton    Africa
-#> 82            61.1095 1905   1900    Smutsia_gigantea       skin    Africa
-#> 83            61.1096 1913   1910    Smutsia_gigantea       skin    Africa
-#> 84             no reg 1946   1940    Smutsia_gigantea       skin    Africa
-#> 74        27.12.1.203 1927   1920 Manis_crassicaudata       skin      Asia
-#> 75           34.3.4.1 1933   1930 Manis_crassicaudata       skin      Asia
-#>                             Country                Locality Extent_km
-#> 81                      South Sudan Northern Bahr el Ghazal    145.39
-#> 82                           Uganda                   Buddu      4.92
-#> 83 Democratic Republic of the Congo               Lake Kivu     62.79
-#> 84                     Sierra Leone             Sulima (Nr)      3.08
-#> 74                          Vietnam                 Bac-Kan     66.71
-#> 75                            Burma                  Ho Khu      0.05
-#>    Certainty Type X binomial_overlap distance distance2 binomial_overlap
-#> 81       100  2.2                  1 422985.6        NA                1
-#> 82        25  2.3                  1 422985.6        NA                1
-#> 83        25  2.7                  1 422985.6        NA                1
-#> 84        75  3.5                  1 422985.6        NA                1
-#> 74       100  2.2                  1      0.0        NA                1
-#> 75        75  3.3                  1      0.0        NA                1
+#>    RegistrationNumber Year Decade           binomial TypeStatus Continent
+#> 70         72.11.13.1 1868   1860 Manis_pentadactyla       skin      Asia
+#> 71         72.11.13.4 1867   1860 Manis_pentadactyla       skin      Asia
+#> 72         72.11.13.7 1867   1860 Manis_pentadactyla       skin      Asia
+#> 73         72.11.13.8 1868   1860 Manis_pentadactyla       skin      Asia
+#> 74           7.7.3.25 1900   1900 Manis_pentadactyla       skin      Asia
+#> 75          21.8.2.27 1920   1920 Manis_pentadactyla       skin      Asia
+#>    Country Locality Extent_km Certainty Type X binomial_overlap distance
+#> 70   China   Hainan    167.98       100  2.4                  1 114219.2
+#> 71   China   Xiamen     46.93        50  2.3                  1 114219.2
+#> 72   China   Xiamen     46.93        50  2.3                  1 114219.2
+#> 73   China   Hainan    167.98       100  2.4                  1 114219.2
+#> 74   China  Shantou     50.30        75  2.3                  1 114219.2
+#> 75   India    Assam     92.64        75  2.2                  1 114219.2
+#>    distance2 binomial_overlap.1 binomial_overlap
+#> 70        NA                  1                1
+#> 71        NA                  1                1
+#> 72        NA                  1                1
+#> 73        NA                  1                1
+#> 74        NA                  1                1
+#> 75        NA                  1                1
 #>                          geometry
-#> 81 GEOMETRYCOLLECTION (POINT (...
-#> 82 GEOMETRYCOLLECTION (POINT (...
-#> 83 GEOMETRYCOLLECTION (POINT (...
-#> 84 GEOMETRYCOLLECTION (POINT (...
+#> 70 GEOMETRYCOLLECTION (POINT (...
+#> 71 GEOMETRYCOLLECTION (POINT (...
+#> 72 GEOMETRYCOLLECTION (POINT (...
+#> 73 GEOMETRYCOLLECTION (POINT (...
 #> 74 GEOMETRYCOLLECTION (POINT (...
 #> 75 GEOMETRYCOLLECTION (POINT (...
 ```
@@ -573,38 +615,38 @@ flattening to use.
 ```r
 NHM_Pangolins <- centroidEdgeDistance(NHM_Pangolins, IUCN)
 head(NHM_Pangolins)
-#> Simple feature collection with 6 features and 16 fields
+#> Simple feature collection with 6 features and 17 fields
 #> geometry type:  GEOMETRYCOLLECTION
 #> dimension:      XY
-#> bbox:           xmin: -4678013 ymin: 525265.6 xmax: 9871394 ymax: 11501860
+#> bbox:           xmin: -7094703 ymin: 7551174 xmax: 1675331 ymax: 11097370
 #> epsg (SRID):    2163
 #> proj4string:    +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs
-#>    RegistrationNumber Year Decade            binomial TypeStatus Continent
-#> 81         35.12.18.3 1935   1930    Smutsia_gigantea   skeleton    Africa
-#> 82            61.1095 1905   1900    Smutsia_gigantea       skin    Africa
-#> 83            61.1096 1913   1910    Smutsia_gigantea       skin    Africa
-#> 84             no reg 1946   1940    Smutsia_gigantea       skin    Africa
-#> 74        27.12.1.203 1927   1920 Manis_crassicaudata       skin      Asia
-#> 75           34.3.4.1 1933   1930 Manis_crassicaudata       skin      Asia
-#>                             Country                Locality Extent_km
-#> 81                      South Sudan Northern Bahr el Ghazal    145.39
-#> 82                           Uganda                   Buddu      4.92
-#> 83 Democratic Republic of the Congo               Lake Kivu     62.79
-#> 84                     Sierra Leone             Sulima (Nr)      3.08
-#> 74                          Vietnam                 Bac-Kan     66.71
-#> 75                            Burma                  Ho Khu      0.05
-#>    Certainty Type X binomial_overlap distance distance2 binomial_overlap.1
-#> 81       100  2.2                  1 419829.1        NA                  1
-#> 82        25  2.3                  1 419829.1        NA                  1
-#> 83        25  2.7                  1 419829.1        NA                  1
-#> 84        75  3.5                  1 419829.1        NA                  1
-#> 74       100  2.2                  1      0.0        NA                  1
-#> 75        75  3.3                  1      0.0        NA                  1
+#>    RegistrationNumber Year Decade           binomial TypeStatus Continent
+#> 70         72.11.13.1 1868   1860 Manis_pentadactyla       skin      Asia
+#> 71         72.11.13.4 1867   1860 Manis_pentadactyla       skin      Asia
+#> 72         72.11.13.7 1867   1860 Manis_pentadactyla       skin      Asia
+#> 73         72.11.13.8 1868   1860 Manis_pentadactyla       skin      Asia
+#> 74           7.7.3.25 1900   1900 Manis_pentadactyla       skin      Asia
+#> 75          21.8.2.27 1920   1920 Manis_pentadactyla       skin      Asia
+#>    Country Locality Extent_km Certainty Type X binomial_overlap distance
+#> 70   China   Hainan    167.98       100  2.4                  1 377001.2
+#> 71   China   Xiamen     46.93        50  2.3                  1 377001.2
+#> 72   China   Xiamen     46.93        50  2.3                  1 377001.2
+#> 73   China   Hainan    167.98       100  2.4                  1 377001.2
+#> 74   China  Shantou     50.30        75  2.3                  1 377001.2
+#> 75   India    Assam     92.64        75  2.2                  1 377001.2
+#>    distance2 binomial_overlap.1 binomial_overlap.2
+#> 70        NA                  1                  1
+#> 71        NA                  1                  1
+#> 72        NA                  1                  1
+#> 73        NA                  1                  1
+#> 74        NA                  1                  1
+#> 75        NA                  1                  1
 #>                          geometry
-#> 81 GEOMETRYCOLLECTION (POINT (...
-#> 82 GEOMETRYCOLLECTION (POINT (...
-#> 83 GEOMETRYCOLLECTION (POINT (...
-#> 84 GEOMETRYCOLLECTION (POINT (...
+#> 70 GEOMETRYCOLLECTION (POINT (...
+#> 71 GEOMETRYCOLLECTION (POINT (...
+#> 72 GEOMETRYCOLLECTION (POINT (...
+#> 73 GEOMETRYCOLLECTION (POINT (...
 #> 74 GEOMETRYCOLLECTION (POINT (...
 #> 75 GEOMETRYCOLLECTION (POINT (...
 ```
@@ -630,16 +672,7 @@ effect package should be sufficent.
 # install.packages('lme4')
 # install.packages('lmerTest')
 library(lme4)
-#> Loading required package: Matrix
 library(lmerTest)
-#> 
-#> Attaching package: 'lmerTest'
-#> The following object is masked from 'package:lme4':
-#> 
-#>     lmer
-#> The following object is masked from 'package:stats':
-#> 
-#>     step
 ```
 
 In theory, the data have now been treated in such a way that constructing the 
