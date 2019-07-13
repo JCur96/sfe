@@ -21,7 +21,7 @@ binomialOverlap <- function(x) {
   output <- c()
 for (var in unique(x$binomial)) {
   subsetOfDf <- x[x$binomial == var,]
-  if (subsetOfDf$Percent_overlap > 0) {
+  if ((subsetOfDf$Percent_overlap > 0) == T) {
     subsetOfDf$Percent_overlap <- 1
     }
   output <- rbind(output, subsetOfDf)

@@ -50,7 +50,7 @@ calculateOverlaps <- function(x, y) {
   # create an empty list to store results
   output <- c()
   # adds a column of na's
-  df1[,"Percent_overlap"] <- NA
+  x[,"Percent_overlap"] <- NA
   # find all entries in both dfs which match var
   for (var in unique(x$binomial)) {
     IUCN_var <- y[y$binomial == var,]

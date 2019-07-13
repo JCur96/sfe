@@ -86,18 +86,18 @@ several functions which are then used for data management, and then making an
 initial release of the data. 
 I will give a brief example of how to use those functions here out of 
 interest; 
-```{r}
-# First it is advisable that you check if you've got the data already
-sfe::mydata_versions()
-# If not, you can check what versions are avaliable on GitHub
-sfe::mydata_versions(local=F)
-# From those you can choose a version you wish to work with
-myFakePangolinData <- sfe::mydata(version = '0.0.1')
-# Once you've made any edits to the data you can upload it to version control
-sfe::updateVersion()
-# UpdateVersion helps you update the description file before you make a new release
-sfe::mydata_release()
-```
+# ```{r}
+# # First it is advisable that you check if you've got the data already
+# sfe::mydata_versions()
+# # If not, you can check what versions are avaliable on GitHub
+# sfe::mydata_versions(local=F)
+# # From those you can choose a version you wish to work with
+# myFakePangolinData <- sfe::mydata(version = '0.0.1')
+# # Once you've made any edits to the data you can upload it to version control
+# sfe::updateVersion()
+# # UpdateVersion helps you update the description file before you make a new release
+# sfe::mydata_release()
+# ```
 
 First I read in the data from both Natural History Museum(NHM) and the IUCN.
 ```{r}
@@ -196,8 +196,16 @@ The next set of functions calculate percentage overlap between point-radius or
 convex hull data, depending on whether the user has utilised the convex hull 
 generating functions yet or not. 
 ```{r}
-NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
+# For speed and viewability we strip out all the extraneous stuff, 
+# we just need the species name and the geometry 
+View(NHM_Pangolins)
+myvars <- c('binomial', 'geometry')
+IUCN <- IUCN[myvars]
+IUCN <- resolveIUCNGeom(IUCN)
+View(IUCN)
 
+NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
+View(NHM_Pangolins)
 ```
 
 The above function will return the NHM data frame with a `Percent_overlap` column
