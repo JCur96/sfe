@@ -4,10 +4,10 @@
 \alias{prepIUCNData}
 \title{Prepares IUCN data for analysis using sf and sfe functions}
 \usage{
-prepIUCNData(path = NULL)
+prepIUCNData(df)
 }
 \arguments{
-\item{path}{is the path to IUCN data}
+\item{df}{OGR format object containing IUCN records}
 }
 \value{
 sf format IUCN data, with binomial underscored

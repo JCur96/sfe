@@ -40,9 +40,9 @@ makeLandClippedHulls <- function(x) {
     subsetOfDf <- x[x$binomial == var,]
     subsetOfDf$geometry <- st_convex_hull(st_combine(subsetOfDf$geometry))
     # sets to correct (long/lat) crs for comparison
-    subsetOfDf <- st_set_crs(subsetOfDf, 4326)
+    # subsetOfDf <- st_set_crs(subsetOfDf, 4326)
     clippedHull <- st_intersection(subsetOfDf$geometry, landMap)
-    if (is_empty(clippedHull)) {
+    if (purrr::is_empty(clippedHull)) {
       # error handling here
       # this function is ONLY for terrestrial convex hulls
       print('Hull is entirely in the ocean')
@@ -50,6 +50,7 @@ makeLandClippedHulls <- function(x) {
       subsetOfDf$geometry <- clippedHull
     }
     output <- rbind(output, subsetOfDf)
+    output <- st_transform(output, 4326)
   }
   return(output)
 }

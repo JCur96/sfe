@@ -19,7 +19,7 @@ makeConvexHulls <- function(x) {
   # empty list to rebuild the df from
   output <- c()
   # preallocating for speed gains
-  df$convex_hull <- NA
+  # df$convex_hull <- NA
   for (var in unique(x$binomial)) {
     # breaking down df to species level
     subsetOfDf <- x[x$binomial == var,]

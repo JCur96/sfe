@@ -4,10 +4,16 @@
 \alias{prepNHMData}
 \title{Reads a .csv file and converts it to a filtered sf object (a data frame)}
 \usage{
-prepNHMData()
+prepNHMData(x, indexToChange = NULL)
 }
 \arguments{
-\item{...}{User input as prompted by the terminal}
+\item{x}{a csv file containing NHM records}
+
+\item{indexToChange}{if the index you need to change is already known please
+enter it here to save time. Including this mostly to make the vignette run
+properly as it doesn't like terminal input. Default of \code{NULL} as in
+most cases I would assume the index is unknown and this function works fine
+outside of the vignette.}
 }
 \value{
 An object of class sf (a data frame) with a column renamed to

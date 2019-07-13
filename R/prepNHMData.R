@@ -7,6 +7,11 @@
 #'
 
 #' @param x a csv file containing NHM records
+#' @param indexToChange if the index you need to change is already known please
+#' enter it here to save time. Including this mostly to make the vignette run
+#' properly as it doesn't like terminal input. Default of \code{NULL} as in
+#' most cases I would assume the index is unknown and this function works fine
+#' outside of the vignette.
 #' @return An object of class sf (a data frame) with a column renamed to
 #' \code{binomial}, with binomial names underscorred, filtered to exclude NA
 #' values.
@@ -18,15 +23,20 @@
 #' YourIndexHere
 #'
 #' @export
-prepNHMData <- function(x) {
-  library(dplyr)
+prepNHMData <- function(x, indexToChange = NULL) {
+  suppressMessages(library(dplyr))
   print(colnames(x))
-  colToChange <- readline(prompt = 'please enter column index to rename to binomial: ')
-  colToChange <- as.numeric(colToChange)
-  colnames(x)[colToChange] <- 'binomial'
-  colToChange <- readline(prompt = 'please enter column index to rename to Locality: ')
-  colToChange <- as.numeric(colToChange)
-  colnames(x)[colToChange] <- 'Locality'
+  if (is.null(indexToChange)) {
+    colToChange <- readline(prompt = 'please enter column index to rename to binomial: ')
+    colToChange <- as.numeric(colToChange)
+    colnames(x)[colToChange] <- 'binomial'
+  } else{
+    colToChange <- as.numeric(indexToChange)
+    colnames(x)[colToChange] <- 'binomial'
+  }
+  # colToChange <- readline(prompt = 'please enter column index to rename to Locality: ')
+  # colToChange <- as.numeric(colToChange)
+  # colnames(x)[colToChange] <- 'Locality'
   x <- x %>%
     filter(Longitude != is.na(Longitude)
            & Latitude !=is.na(Latitude) & Locality !='' & binomial != '')

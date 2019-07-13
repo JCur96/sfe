@@ -23,22 +23,25 @@ clipHullsToLand <- function(x) {
   # making a world map of the land
   landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>%
     st_union()
+  landMap <- st_transform(landMap, 2163)
+  x <- st_transform(x, 2163)
   output <- c()
   for (var in unique(x$binomial)) {
     subsetOfDf <- x[x$binomial == var,]
-    clippedHull <- st_intersection(subsetOfDf$convex_hull, landMap)
+    clippedHull <- st_intersection(subsetOfDf$geometry, landMap)
     # ocean <- st_difference(subsetOfDf$convex_hull, landMap)
-    if (is_empty(clippedHull)) {
+    if (purrr::is_empty(clippedHull)) {
       # error handling here
       # can make this more complex but currently
       # this is just for working terrestrially
       print('Hull is entirely in the ocean')
     } else {
       # print(clippedHull)
-      subsetOfDf$convex_hull <- clippedHull
+      subsetOfDf$geometry <- clippedHull
 
     }
     output <- rbind(output, subsetOfDf)
+    output <- st_transform(output, 4326)
   }
   return(output)
 }

@@ -6,10 +6,15 @@
 User terminal input
 Terminal prompts ask for path to data and layer type}
 \usage{
-inReadOld()
+inReadOld(path = NULL, name = NULL)
 }
 \arguments{
-\item{...}{Parameters are enterd into the console where prompted. Both a
+\item{path}{Path to data entered as a string, default is \code{NULL}}
+
+\item{name}{layer for readOGR to work with, entered as a string,  default is
+\code{NULL}
+
+Parameters are enterd into the console where prompted. Both a
 path to an IUCN data set and then the layer to read need to be entered}
 }
 \value{
