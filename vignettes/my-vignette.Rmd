@@ -183,7 +183,7 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)
 print(p)
-  ```
+```
 
 Not all maps will seem to show anything interesting, but that is mostly due to 
 the scale of the maps versus the scale of the species ranges in some cases. 
@@ -197,6 +197,7 @@ convex hull data, depending on whether the user has utilised the convex hull
 generating functions yet or not. 
 ```{r}
 NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
+
 ```
 
 The above function will return the NHM data frame with a `Percent_overlap` column

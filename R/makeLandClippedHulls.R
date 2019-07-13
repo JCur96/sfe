@@ -25,12 +25,12 @@
 #' @export
 makeLandClippedHulls <- function(x) {
   # transform crs to make st_intersect happy
-  x <- st_transform(x, 2163)
+  # x <- st_transform(x, 2163)
   # makes a base for hulls to be clipped to
   landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>%
     st_union()
   # transform crs to make st_intersect happy
-  landMap <- st_transform(landMap, 2163)
+  # landMap <- st_transform(landMap, 2163)
   # empty list to rebuild the df from
   output <- c()
   # pre-allocate for slight speed gain
@@ -41,7 +41,7 @@ makeLandClippedHulls <- function(x) {
     subsetOfDf$geometry <- st_convex_hull(st_combine(subsetOfDf$geometry))
     # sets to correct (long/lat) crs for comparison
     # subsetOfDf <- st_set_crs(subsetOfDf, 4326)
-    clippedHull <- st_intersection(subsetOfDf$geometry, landMap)
+    clippedHull <- suppressMessages(st_intersection(subsetOfDf$geometry, landMap))
     if (purrr::is_empty(clippedHull)) {
       # error handling here
       # this function is ONLY for terrestrial convex hulls
