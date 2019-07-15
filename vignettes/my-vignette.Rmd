@@ -87,16 +87,16 @@ initial release of the data.
 I will give a brief example of how to use those functions here out of 
 interest; 
 ```{r}
-# First it is advisable that you check if you've got the data already
-sfe::mydata_versions()
-# If not, you can check what versions are avaliable on GitHub
-sfe::mydata_versions(local=F)
-# From those you can choose a version you wish to work with
-myFakePangolinData <- sfe::mydata(version = '0.0.1')
-# Once you've made any edits to the data you can upload it to version control
-sfe::updateVersion()
-# UpdateVersion helps you update the description file before you make a new release
-sfe::mydata_release()
+# # First it is advisable that you check if you've got the data already
+# sfe::mydata_versions()
+# # If not, you can check what versions are avaliable on GitHub
+# sfe::mydata_versions(local=F)
+# # From those you can choose a version you wish to work with
+# myFakePangolinData <- sfe::mydata(version = '0.0.1')
+# # Once you've made any edits to the data you can upload it to version control
+# sfe::updateVersion()
+# # UpdateVersion helps you update the description file before you make a new release
+# sfe::mydata_release()
 ```
 The errors you see here are because I'm not giving the functions the correct 
 input, but I promise they d0 work when they have correct input. 
@@ -118,13 +118,13 @@ making sure both are projected in latitude and longitude.
 ```{r}
 NHM_Pangolins <- prepNHMData(NHM_Pangolins, 6)
 # To prove that this has done what we want, we can view the first ten rows
-head(NHM_Pangolins)
+# head(NHM_Pangolins)
 # So it's not quite ready yet as it still contains a lot of missing values.
 # Filtering out records which don't have a decade should help. 
 # We also don't really need all the notes at the moment, so we can drop that column
 NHM_Pangolins <- NHM_Pangolins %>% filter(Decade != is.na(Decade))
 NHM_Pangolins <- NHM_Pangolins %>% select(-c(NOTES))
-head(NHM_Pangolins)
+# head(NHM_Pangolins)
 IUCN <- prepIUCNData(IUCN)
 # head(IUCN)
 ```
@@ -156,7 +156,7 @@ method.
 NHM_Pangolins$Extent..m. <- (NHM_Pangolins$Extent..m. /1000)
 NHM_Pangolins <- NHM_Pangolins %>% rename(Extent_km = Extent..m.)
 NHM_Pangolins <- addError(NHM_Pangolins)
-head(NHM_Pangolins)
+# head(NHM_Pangolins)
 ```
 
 At this point I thought it would be useful to explore the data visually, both 
@@ -204,12 +204,12 @@ myvars <- c('binomial', 'geometry')
 IUCN <- IUCN[myvars]
 IUCN <- resolveIUCNGeom(IUCN)
 IUCN <- st_as_sf(IUCN)
-class(IUCN)
-head(IUCN)
+# class(IUCN)
+# head(IUCN)
 # NHM_Pangolins$Percent_overlap <- NA
-head(NHM_Pangolins)
+# head(NHM_Pangolins)
 NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
-head(NHM_Pangolins)
+# head(NHM_Pangolins)
 ```
 
 The above function will return the NHM data frame with a `Percent_overlap` column
@@ -222,7 +222,7 @@ which can be created and tailored using the following functions;
 # This first function creates convex hulls, without any clipping to landmasses
 NHM_Pangolins <- makeConvexHulls(NHM_Pangolins)
 # And this function takes those hulls and clips them to landmasses 
-head(NHM_Pangolins)
+# head(NHM_Pangolins)
 NHM_Pangolins <- clipHullsToLand(NHM_Pangolins)
 #If you know you want hulls which are clipped to landmasses from the start you 
 # can use the following function
@@ -261,13 +261,19 @@ Similarly I can calculate the percentage overlap between convex hulls and using
 the `calculateOverlaps` function from earlier. 
 ```{r}
 NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
-head(NHM_Pangolins)
+# head(NHM_Pangolins)
 ```
 This function changes the `Percent_overlap` column to `binomial_overlap` as well
 as flatten the data.
+If you inspect the data you will see that all species have some overlap, so the
+below function will say that all species overlap (and are equal in that). But 
+that is clearly ridiculous, so I will use a modified (non-commented out) version
+of the binomial overlap function which has a threshold of 50% overlap to count a 
+species range as being overlapping. 
 ```{r}
-NHM_Pangolins <- binomialOverlap(NHM_Pangolins)
-head(NHM_Pangolins)
+# NHM_Pangolins <- suppressWarnings(binomialOverlap(NHM_Pangolins))
+NHM_Pangolins <- suppressWarnings(modifiedBinomialOverlap(NHM_Pangolins))
+# head(NHM_Pangolins)
 ```
 
 I have also created a function for calculating the distance between the centroid 
@@ -276,7 +282,7 @@ be of interest with regards to analysis and modelling, and does not requrie any
 flattening to use. 
 ```{r}
 NHM_Pangolins <- centroidEdgeDistance(NHM_Pangolins, IUCN)
-head(NHM_Pangolins)
+# head(NHM_Pangolins)
 ```
 
 This returns the NHM data frame with added an added distance column (and a 
@@ -306,10 +312,29 @@ In theory, the data have now been treated in such a way that constructing the
 models that I wish to explore will be extremely simple. 
 
 ```{r}
-binomialModel <- glmer(binomial_overlap ~ decade + (1|binomial), 
+# First I plot out the data to explore it.
+p <- ggplot(NHM_Pangolins, aes(x=binomial, y=binomial_overlap)) +
+  geom_boxplot() +
+  scale_x_discrete(labels = abbreviate)
+p
+p2 <- ggplot(NHM_Pangolins, aes(x=Decade, y=binomial_overlap)) +
+  geom_point()
+p2
+p3 <- ggplot(NHM_Pangolins, aes(x=binomial, y=distance)) +
+  geom_boxplot() +
+  scale_x_discrete(labels = abbreviate)
+p3
+p4 <- ggplot(NHM_Pangolins, aes(x=Decade, y=distance)) +
+  geom_point()
+p4
+gridExtra::grid.arrange(p, p2, p3, p4, ncol=2)
+
+# Then I model to see if the trends I think I'm seeing are actually there
+
+binomialModel <- glmer(binomial_overlap ~ Year + (1|binomial), 
                        data = NHM_Pangolins, family = 'binomial')
-distanceModel <- glmer(distance ~ decade + (1|binomial),
-                       data = NHM_Pangolins, family = 'gaussian')
+distanceModel <- lmer(1/log(distance) ~ Decade + (1|binomial),
+                       data = NHM_Pangolins)
 
 # And then we plot some these just to see
 # WILL BE USING GGPLOT FOR THIS BUT FOR STARTERS LETS JUST BASE PLOT
@@ -317,10 +342,10 @@ plot(binomialModel)
 plot(distanceModel)
 # or potentially
 
-binomialModel2 <- glmer(binomial_overlap ~ binomial + (1|decade), 
+binomialModel2 <- glmer(binomial_overlap ~ binomial + (1|Decade), 
                        data = NHM_Pangolins, family = 'binomial')
-distanceModel2 <- glmer(distance ~ binomial + (1|decade),
-                       data = NHM_Pangolins, family = 'gaussian')
+distanceModel2 <- lmer(distance ~ binomial + (1|Decade),
+                       data = NHM_Pangolins)
 
 # And then we plot some these just to see
 # WILL BE USING GGPLOT FOR THIS BUT FOR STARTERS LETS JUST BASE PLOT 

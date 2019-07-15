@@ -1,5 +1,6 @@
 # two input function for calculating the percentage overlap
 overlaps <- function(df1, df2) {
+  df1 <- lwgeom::st_make_valid(df1)
   # gives percentage overlap between NHM and IUCN
   overlap <- st_intersection(df1, df2) %>% st_area() * 100 / st_area(df2)
   # at this point the output is of class "units" which don't play nice

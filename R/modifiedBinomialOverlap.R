@@ -1,6 +1,6 @@
-#' Turns percentage overlap data into binomial data
+#' Turns percentage overlap data into binomial data at a 50% threshold
 #'
-#' \code{binomialOverlap} turns previously calculated percentage overlap data
+#' \code{modifiedBinomialOverlap} turns previously calculated percentage overlap data
 #' into binomial (yes/no or 1/0) overlap data on a per species basis. This is in
 #' preparation for analysis using binomial GLMM's.
 #'
@@ -17,18 +17,18 @@
 #' @examples
 #' x <- binomialOverlap(x)
 #' @export
-binomialOverlap <- function(x) {
+modifiedBinomialOverlap <- function(x) {
   output <- c()
-for (var in unique(x$binomial)) {
-  subsetOfDf <- x[x$binomial == var,]
-  # subsetOfDf$Percent_overlap <- as.numeric(subsetOfDf$Percent_overlap)
-  if ((subsetOfDf$Percent_overlap > 0.0) == T) {
-    subsetOfDf$Percent_overlap <- 1
-  } else if (subsetOfDf$Percent_overlap == 0.0) {
-    subsetOfDf$Percent_overlap <- 0
+  for (var in unique(x$binomial)) {
+    subsetOfDf <- x[x$binomial == var,]
+    # subsetOfDf$Percent_overlap <- as.numeric(subsetOfDf$Percent_overlap)
+    if ((subsetOfDf$Percent_overlap > 50.99) == T) {
+      subsetOfDf$Percent_overlap <- 1
+    } else if (subsetOfDf$Percent_overlap <= 50.99) {
+      subsetOfDf$Percent_overlap <- 0
+    }
+    output <- rbind(output, subsetOfDf)
   }
-  output <- rbind(output, subsetOfDf)
-}
   output$Percent_overlap <- as.integer(output$Percent_overlap)
   names(output)[names(output) == 'Percent_overlap'] <- 'binomial_overlap'
   return(output)

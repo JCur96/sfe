@@ -17,12 +17,12 @@
 #' "enter layer:"
 #' PANGOLINS
 #' @export
-inReadOld <- function(path = NULL, name = NULL) {
-  if (is.null(path)) {
+inReadOld <- function(path = ' ', name = ' ') {
+  if (purrr::is_empty(path) == T) {
     path <- readline(prompt = 'please enter path to IUCN data: ')
   }
   path <- file.path(path)
-  if (is.null(name)) {
+  if (purrr::is_empty(name) == T) {
     name <- readline(prompt = 'please enter the name of the layer, this will be
                   # the name of the shape file without the extension: ')
   } else{

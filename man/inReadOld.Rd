@@ -6,7 +6,7 @@
 User terminal input
 Terminal prompts ask for path to data and layer type}
 \usage{
-inReadOld(path = NULL, name = NULL)
+inReadOld(path = " ", name = " ")
 }
 \arguments{
 \item{path}{Path to data entered as a string, default is \code{NULL}}
