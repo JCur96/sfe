@@ -346,25 +346,25 @@ summary(dist2)
 summary(dist3)
 
 
-
-binomialModel <- glmer(binomial_overlap ~ Year + (1|binomial), 
-                       data = NHM_Pangolins, family = 'binomial')
-distanceModel <- lmer(1/log(distance) ~ Decade + (1|binomial),
-                       data = NHM_Pangolins)
-
-# And then we plot some these just to see
-# WILL BE USING GGPLOT FOR THIS BUT FOR STARTERS LETS JUST BASE PLOT
-plot(binomialModel)
-plot(distanceModel)
-# or potentially
-
-binomialModel2 <- glmer(binomial_overlap ~ binomial + (1|Decade), 
-                       data = NHM_Pangolins, family = 'binomial')
-distanceModel2 <- lmer(distance ~ binomial + (1|Decade),
-                       data = NHM_Pangolins)
-
-# And then we plot some these just to see
-# WILL BE USING GGPLOT FOR THIS BUT FOR STARTERS LETS JUST BASE PLOT 
-plot(binomialModel2)
-plot(distanceModel2)
+# 
+# binomialModel <- glmer(binomial_overlap ~ Year + (1|binomial), 
+#                        data = NHM_Pangolins, family = 'binomial')
+# distanceModel <- lmer(1/log(distance) ~ Decade + (1|binomial),
+#                        data = NHM_Pangolins)
+# 
+# # And then we plot some these just to see
+# # WILL BE USING GGPLOT FOR THIS BUT FOR STARTERS LETS JUST BASE PLOT
+# plot(binomialModel)
+# plot(distanceModel)
+# # or potentially
+# 
+# binomialModel2 <- glmer(binomial_overlap ~ binomial + (1|Decade), 
+#                        data = NHM_Pangolins, family = 'binomial')
+# distanceModel2 <- lmer(distance ~ binomial + (1|Decade),
+#                        data = NHM_Pangolins)
+# 
+# # And then we plot some these just to see
+# # WILL BE USING GGPLOT FOR THIS BUT FOR STARTERS LETS JUST BASE PLOT 
+# plot(binomialModel2)
+# plot(distanceModel2)
 ```
