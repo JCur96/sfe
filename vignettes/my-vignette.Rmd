@@ -255,6 +255,7 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)
 print(p)
+plotMaps(NHM_Pangolins, IUCN, path = '../output/convex_hull_graphs/')
 ```
 
 Similarly I can calculate the percentage overlap between convex hulls and using 
@@ -330,6 +331,21 @@ p4
 gridExtra::grid.arrange(p, p2, p3, p4, ncol=2)
 
 # Then I model to see if the trends I think I'm seeing are actually there
+bin <- glm(NHM_Pangolins$binomial_overlap ~ NHM_Pangolins$Decade + NHM_Pangolins$binomial, family = 'binomial')
+bin2 <- glm(NHM_Pangolins$binomial_overlap ~ NHM_Pangolins$Decade, family = 'binomial')
+bin3 <- glm(NHM_Pangolins$binomial_overlap ~ NHM_Pangolins$binomial, family = 'binomial')
+summary(bin)
+summary(bin2)
+summary(bin3)
+
+dist <- glm(NHM_Pangolins$distance ~ NHM_Pangolins$Decade + NHM_Pangolins$binomial)
+dist2 <- glm(NHM_Pangolins$distance ~ NHM_Pangolins$Decade)
+dist3 <- (NHM_Pangolins$distance ~ NHM_Pangolins$binomial)
+summary(dist)
+summary(dist2)
+summary(dist3)
+
+
 
 binomialModel <- glmer(binomial_overlap ~ Year + (1|binomial), 
                        data = NHM_Pangolins, family = 'binomial')
