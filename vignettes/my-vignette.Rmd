@@ -311,7 +311,8 @@ library(lmerTest)
 
 In theory, the data have now been treated in such a way that constructing the 
 models that I wish to explore will be extremely simple. 
-
+First I plot out the data to look for any trends;
+MAKE A PLOT OF PERCENT OVERLAP BY DECADE
 ```{r}
 # First I plot out the data to explore it.
 p <- ggplot(NHM_Pangolins, aes(x=binomial, y=binomial_overlap)) +
@@ -329,7 +330,11 @@ p4 <- ggplot(NHM_Pangolins, aes(x=Decade, y=distance)) +
   geom_point()
 p4
 gridExtra::grid.arrange(p, p2, p3, p4, ncol=2)
-
+```
+To my eye both overlap and centroid-edge distance show species dependent patterns, 
+whereas decade doesn't show any strong trends. However, I think it is still worth 
+investigating the effect decade has on predicting both overlap and distance.
+```{r}
 # Then I model to see if the trends I think I'm seeing are actually there
 bin <- glm(NHM_Pangolins$binomial_overlap ~ NHM_Pangolins$Decade + NHM_Pangolins$binomial, family = 'binomial')
 bin2 <- glm(NHM_Pangolins$binomial_overlap ~ NHM_Pangolins$Decade, family = 'binomial')
@@ -344,7 +349,6 @@ dist3 <- (NHM_Pangolins$distance ~ NHM_Pangolins$binomial)
 summary(dist)
 summary(dist2)
 summary(dist3)
-
 
 # 
 # binomialModel <- glmer(binomial_overlap ~ Year + (1|binomial), 
@@ -368,3 +372,6 @@ summary(dist3)
 # plot(binomialModel2)
 # plot(distanceModel2)
 ```
+Modelling decade as a predictor of overlap does give a statistically significant
+result (p < 0.005, READ UP ON REPORTING LINEAR MODELS), as does modelling distance
+as a function of both decade and species, in four cases (REPORT STATS HERE). 
