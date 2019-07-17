@@ -273,7 +273,10 @@ of the binomial overlap function which has a threshold of 50% overlap to count a
 species range as being overlapping. 
 ```{r}
 # NHM_Pangolins <- suppressWarnings(binomialOverlap(NHM_Pangolins))
-NHM_Pangolins <- suppressWarnings(modifiedBinomialOverlap(NHM_Pangolins))
+# NHM_Pangolins <- suppressWarnings(modifiedBinomialOverlap(NHM_Pangolins))
+NHM_Pangolins <- binomialOverlap(NHM_Pangolins)
+# View(NHM_Pangolins)
+# All of the convex hulls overlap somewhat, so error might be due to that? 
 # head(NHM_Pangolins)
 ```
 
@@ -315,20 +318,30 @@ First I plot out the data to look for any trends;
 MAKE A PLOT OF PERCENT OVERLAP BY DECADE
 ```{r}
 # First I plot out the data to explore it.
+# change to percentage overlap for graphs, with response being number of overlaps/non-overlaps
+# wrap decade in as.numeric) 
+# for convex hulls, make a new df of by species, and can do binomial model on that with 
+# and use percentage overlap as response
+# can do point graph 
+# STOP WRITING UTILISE 
+# make bullet pointed lists before I start writing
+# so will need overlaps for individual point data here 
+# and after will need raw percentages, so modify funs so that we don't lose either
+# column 
 p <- ggplot(NHM_Pangolins, aes(x=binomial, y=binomial_overlap)) +
   geom_boxplot() +
   scale_x_discrete(labels = abbreviate)
-p
+# p
 p2 <- ggplot(NHM_Pangolins, aes(x=Decade, y=binomial_overlap)) +
   geom_point()
-p2
+# p2
 p3 <- ggplot(NHM_Pangolins, aes(x=binomial, y=distance)) +
   geom_boxplot() +
   scale_x_discrete(labels = abbreviate)
-p3
+# p3
 p4 <- ggplot(NHM_Pangolins, aes(x=Decade, y=distance)) +
   geom_point()
-p4
+# p4
 gridExtra::grid.arrange(p, p2, p3, p4, ncol=2)
 ```
 To my eye both overlap and centroid-edge distance show species dependent patterns, 

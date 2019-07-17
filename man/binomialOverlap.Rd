@@ -12,7 +12,7 @@ overlaps of range polygons between Natrual History Museum data and IUCN data.}
 }
 \value{
 \code{x} with the \code{Percent_overlaps} column "flattened" to
-binomial data.
+binomial data and stored in the \code{binomial_overlap} column.
 }
 \description{
 \code{binomialOverlap} turns previously calculated percentage overlap data

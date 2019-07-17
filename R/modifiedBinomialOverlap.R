@@ -1,4 +1,4 @@
-#' Turns percentage overlap data into binomial data at a 50% threshold
+#' Turns percentage overlap data into binomial data at a 50\% threshold
 #'
 #' \code{modifiedBinomialOverlap} turns previously calculated percentage overlap data
 #' into binomial (yes/no or 1/0) overlap data on a per species basis. This is in
@@ -12,24 +12,25 @@
 #' overlaps of range polygons between Natrual History Museum data and IUCN data.
 #'
 #' @return \code{x} with the \code{Percent_overlaps} column "flattened" to
-#' binomial data.
+#' binomial data, and stored in the \code{binomial_overlap} column
 #'
 #' @examples
-#' x <- binomialOverlap(x)
+#' x <- modifiedBinomialOverlap(x)
 #' @export
 modifiedBinomialOverlap <- function(x) {
+  x['binomial_overlap'] <- NA
   output <- c()
   for (var in unique(x$binomial)) {
     subsetOfDf <- x[x$binomial == var,]
     # subsetOfDf$Percent_overlap <- as.numeric(subsetOfDf$Percent_overlap)
     if ((subsetOfDf$Percent_overlap > 50.99) == T) {
-      subsetOfDf$Percent_overlap <- 1
+      subsetOfDf$binomial_overlap <- 1
     } else if (subsetOfDf$Percent_overlap <= 50.99) {
-      subsetOfDf$Percent_overlap <- 0
+      subsetOfDf$binomial_overlap <- 0
     }
     output <- rbind(output, subsetOfDf)
   }
-  output$Percent_overlap <- as.integer(output$Percent_overlap)
-  names(output)[names(output) == 'Percent_overlap'] <- 'binomial_overlap'
+  output$binomial_overlap <- as.integer(output$binomial_overlap)
+  # names(output)[names(output) == 'Percent_overlap'] <- 'binomial_overlap'
   return(output)
 }

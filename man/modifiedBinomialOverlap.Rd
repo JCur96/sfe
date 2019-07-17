@@ -2,7 +2,7 @@
 % Please edit documentation in R/modifiedBinomialOverlap.R
 \name{modifiedBinomialOverlap}
 \alias{modifiedBinomialOverlap}
-\title{Turns percentage overlap data into binomial data at a 50% threshold}
+\title{Turns percentage overlap data into binomial data at a 50\% threshold}
 \usage{
 modifiedBinomialOverlap(x)
 }
@@ -12,7 +12,7 @@ overlaps of range polygons between Natrual History Museum data and IUCN data.}
 }
 \value{
 \code{x} with the \code{Percent_overlaps} column "flattened" to
-binomial data.
+binomial data, and stored in the \code{binomial_overlap} column
 }
 \description{
 \code{modifiedBinomialOverlap} turns previously calculated percentage overlap data
@@ -25,5 +25,5 @@ check if an \code{if} condition is true, these arise due to R interpreting
 the column of \code{Percent_overlap} as a list, so can be safely ignored.
 }
 \examples{
-x <- binomialOverlap(x)
+x <- modifiedBinomialOverlap(x)
 }
