@@ -281,7 +281,8 @@ species range as being overlapping.
 ```{r}
 # NHM_Pangolins <- suppressWarnings(binomialOverlap(NHM_Pangolins))
 # NHM_Pangolins <- suppressWarnings(modifiedBinomialOverlap(NHM_Pangolins))
-NHM_Pangolins <- suppressWarnings(binomialOverlap(NHM_Pangolins))
+
+NHM_Pangolins <- binomialOverlap(NHM_Pangolins)
 NHM_Pangolins_hulls <- suppressWarnings(binomialOverlap(NHM_Pangolins_hulls))
 View(NHM_Pangolins)
 # All of the convex hulls overlap somewhat, so error might be due to that? 

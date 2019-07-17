@@ -20,17 +20,38 @@
 binomialOverlap <- function(x) {
   x['binomial_overlap'] <- NA
   output <- c()
-for (var in unique(x$binomial)) {
-  subsetOfDf <- x[x$binomial == var,]
-  # subsetOfDf$binomial_overlap <- as.numeric(subsetOfDf$binomial_overlap)
-  if ((subsetOfDf$Percent_overlap > 0.0) == T) {
-    subsetOfDf$binomial_overlap <- 1
-  } else if (subsetOfDf$Percent_overlap == 0.0) {
-    subsetOfDf$binomial_overlap <- 0
+  for (row in 1:nrow(x)) {
+    print(row)
+    PO <- x[row,'Percent_overlap']
+    # print(PO)
+    # print(x[row == T])
+    # PCO <- x[row, 'Pecent_overlap']
+    if (PO > 0.0) {
+      x[row, 'binomial_overlap'] <- 1
+    } else if (PO == 0.0) {
+      x[row, 'binomial_overlap'] <- 0
+    }
   }
-  output <- rbind(output, subsetOfDf)
-}
-  output$binomial_overlap <- as.integer(output$binomial_overlap)
-  #names(output)[names(output) == 'Percent_overlap'] <- 'binomial_overlap'
-  return(output)
+# for (row in 1:nrow(x)) {
+#   subsetOfDf <- x[row == T]
+#   print(subsetOfDf)
+#   if (subsetOfDf$Percent_overlap > 0.0) {
+#     subsetOfDf$binomial_overlap <- 1
+#   } else if (subsetOfDf$Percent_overlap == 0.0) {
+#     subsetOfDf$binomial_overlap <- 0
+#   }
+#   # subsetOfDf <- x[x$binomial == var,]
+#   # subsetOfDf$binomial_overlap <- as.numeric(subsetOfDf$binomial_overlap)
+# #   if ((row$Percent_overlap > 0.0) == T) {
+# #     x$binomial_overlap <- 1
+# #   } else if (subsetOfDf$Percent_overlap == 0.0) {
+# #     subsetOfDf$binomial_overlap <- 0
+# #   }
+# #   output <- rbind(output, subsetOfDf)
+# # }
+# #   #output$binomial_overlap <- as.integer(output$binomial_overlap)
+# #   #names(output)[names(output) == 'Percent_overlap'] <- 'binomial_overlap'
+#   output <- rbind(output, subsetOfDf)
+
+  return(x)
 }
