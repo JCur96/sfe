@@ -215,18 +215,25 @@ NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
 The above function will return the NHM data frame with a `Percent_overlap` column
 added, the contents of which is calculated from the geometry column of the data.
 
+Here I create a new data frame to perfrom the subsequent operations on in 
+preparation for analysis (as convex hulls and point-radius data require slightly
+different statistical approaches in this case).
+
+```{r}
+NHM_Pangolins_hulls <- NHM_Pangolins
+```
 The geometry column could either be point-radius or a fully realised convex hull,
 which can be created and tailored using the following functions; 
 
 ```{r}
 # This first function creates convex hulls, without any clipping to landmasses
-NHM_Pangolins <- makeConvexHulls(NHM_Pangolins)
+NHM_Pangolins_hulls <- makeConvexHulls(NHM_Pangolins_hulls)
 # And this function takes those hulls and clips them to landmasses 
 # head(NHM_Pangolins)
-NHM_Pangolins <- clipHullsToLand(NHM_Pangolins)
+NHM_Pangolins_hulls <- clipHullsToLand(NHM_Pangolins_hulls)
 #If you know you want hulls which are clipped to landmasses from the start you 
 # can use the following function
-NHM_Pangolins <- makeLandClippedHulls(NHM_Pangolins)
+NHM_Pangolins_hulls <- makeLandClippedHulls(NHM_Pangolins_hulls)
 ```
 
 All of the above will give a percentage overlap with IUCN convex hulls, but for 
@@ -241,7 +248,7 @@ you dont mind overwriting the previous plots.
 ```{r}
 # Here is an example of a single plot from that command, or how to plot just one
 # graph that is of interest
-egForPlot <-NHM_Pangolins %>% filter(binomial == 'Smutsia_temminckii')
+egForPlot <-NHM_Pangolins_hulls %>% filter(binomial == 'Smutsia_temminckii')
 IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_temminckii')
 # puts the coords into the order expected down in ggmap coords
 bbox <- c(-14.414063,-37.996163,53.613281,27.994401)
@@ -255,13 +262,13 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)
 print(p)
-plotMaps(NHM_Pangolins, IUCN, path = '../output/convex_hull_graphs/')
+plotMaps(NHM_Pangolins_hulls, IUCN, path = '../output/convex_hull_graphs/')
 ```
 
 Similarly I can calculate the percentage overlap between convex hulls and using 
 the `calculateOverlaps` function from earlier. 
 ```{r}
-NHM_Pangolins <- calculateOverlaps(NHM_Pangolins, IUCN)
+NHM_Pangolins_hulls <- calculateOverlaps(NHM_Pangolins_hulls, IUCN)
 # head(NHM_Pangolins)
 ```
 This function changes the `Percent_overlap` column to `binomial_overlap` as well
@@ -274,8 +281,9 @@ species range as being overlapping.
 ```{r}
 # NHM_Pangolins <- suppressWarnings(binomialOverlap(NHM_Pangolins))
 # NHM_Pangolins <- suppressWarnings(modifiedBinomialOverlap(NHM_Pangolins))
-NHM_Pangolins <- binomialOverlap(NHM_Pangolins)
-# View(NHM_Pangolins)
+NHM_Pangolins <- suppressWarnings(binomialOverlap(NHM_Pangolins))
+NHM_Pangolins_hulls <- suppressWarnings(binomialOverlap(NHM_Pangolins_hulls))
+View(NHM_Pangolins)
 # All of the convex hulls overlap somewhat, so error might be due to that? 
 # head(NHM_Pangolins)
 ```
@@ -283,15 +291,54 @@ NHM_Pangolins <- binomialOverlap(NHM_Pangolins)
 I have also created a function for calculating the distance between the centroid 
 of the NHM data and the edge of the IUCN data, as I feel that this distance might
 be of interest with regards to analysis and modelling, and does not requrie any
-flattening to use. 
+flattening to use. Here I use it on both data sets, as they will tell me something
+subtly different once analysed;
 ```{r}
 NHM_Pangolins <- centroidEdgeDistance(NHM_Pangolins, IUCN)
+NHM_Pangolins_hulls <- centroidEdgeDistance(NHM_Pangolins_hulls, IUCN)
 # head(NHM_Pangolins)
 ```
 
 This returns the NHM data frame with added an added distance column (and a 
 distance2 column, as there are a few IUCN records with two range polygons, and 
 without this inclusion the function will not run). 
+
+There is a final step for preparing the point-radius data, which is generating 
+counts of successes/failures for overlaps;
+```{r}
+countNumbSpecimens <- function(x) {
+  NHM_Pangolins['numberOfSpecimens'] <- NA
+  for (var in unique(x$binomial)) {
+    # print(var)
+    subsetOfDf <- x[x$binomial == var,]
+    #print(subsetOfDf)
+    x$numberOfSpecimens <- (length(subsetOfDf$binomial))
+  }
+  return(x)
+}
+NHM_Pangolins <- countNumbSpecimens(NHM_Pangolins)
+
+countNumbOverlaps <- function(x) {
+  NHM_Pangolins['numberOfOverlaps'] <- NA
+  for (var in unique(x$binomial)) {
+    # print(var)
+    subsetOfDf <- x[x$binomial == var,]
+    #print(subsetOfDf)
+    x$numberOfOverlaps <- (length(subsetOfDf$binomial_overlaps == 1))
+  }
+  return(x)
+}
+NHM_Pangolins <- countNumbOverlaps(NHM_Pangolins)
+View(NHM_Pangolins)
+```
+
+And there is a final step for preparing the convex hull data for analysis, which is 
+reducing the data set to a single entry per species;
+```{r}
+myvars <- c('binomial', 'Percent_overlap', 'distance')
+NHM_Pangolins_hulls <- NHM_Pangolins_hulls[myvars]
+NHM_Pangolins_hulls <- unique(NHM_Pangolins_hulls)
+```
 
 ------
 

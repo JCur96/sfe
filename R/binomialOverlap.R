@@ -25,7 +25,7 @@ for (var in unique(x$binomial)) {
   # subsetOfDf$binomial_overlap <- as.numeric(subsetOfDf$binomial_overlap)
   if ((subsetOfDf$Percent_overlap > 0.0) == T) {
     subsetOfDf$binomial_overlap <- 1
-  } else if (subsetOfDf$binomial_overlap == 0.0) {
+  } else if (subsetOfDf$Percent_overlap == 0.0) {
     subsetOfDf$binomial_overlap <- 0
   }
   output <- rbind(output, subsetOfDf)
