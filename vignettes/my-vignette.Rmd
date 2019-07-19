@@ -66,6 +66,7 @@ by
 library(sfe)
 library(rgeos)
 library(rgdal)
+library(ggplot2)
 ```
 The package is now loaded and ready for use. 
 
