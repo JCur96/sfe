@@ -310,28 +310,34 @@ counts of successes/failures for overlaps;
 ```{r}
 countNumbSpecimens <- function(x) {
   NHM_Pangolins['numberOfSpecimens'] <- NA
+  output <- c()
   for (var in unique(x$binomial)) {
-    # print(var)
     subsetOfDf <- x[x$binomial == var,]
-    #print(subsetOfDf)
-    x$numberOfSpecimens <- (length(subsetOfDf$binomial))
+    tmp <- (length(subsetOfDf$binomial))
+    # print(tmp)
+    subsetOfDf$numberOfSpecimens <- tmp
+    output <- rbind(output, subsetOfDf)
   }
-  return(x)
+  return(output)
 }
 NHM_Pangolins <- countNumbSpecimens(NHM_Pangolins)
+View(NHM_Pangolins)
 
 countNumbOverlaps <- function(x) {
   NHM_Pangolins['numberOfOverlaps'] <- NA
+  output <- c()
   for (var in unique(x$binomial)) {
     # print(var)
     subsetOfDf <- x[x$binomial == var,]
-    #print(subsetOfDf)
-    x$numberOfOverlaps <- (length(subsetOfDf$binomial_overlaps == 1))
+    tmp <- (length(which(subsetOfDf$binomial_overlap == 1)))
+    subsetOfDf$numberOfOverlaps <- tmp
+    output <- rbind(output, subsetOfDf)
+    
   }
-  return(x)
+  return(output)
 }
 NHM_Pangolins <- countNumbOverlaps(NHM_Pangolins)
-View(NHM_Pangolins)
+
 ```
 
 And there is a final step for preparing the convex hull data for analysis, which is 
