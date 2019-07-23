@@ -28,7 +28,7 @@ repository isn't signed so you will have to manually add this to trusted sources
 Please see apt-secure(8) manpage and sources.list(5) manpage for details on what 
 this actually means before moving on to the next section and doing that with 
 the following commands on Linux terminal;
-```
+```{bash}
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable 
     && sudo apt-get update
 sudo gedit /etc/apt/sources.list.d/ubuntugis-ubuntu-ubuntu-ubuntugis-unstable-bionic.list
@@ -43,7 +43,7 @@ https://stackoverflow.com/questions/12141422/error-gdal-config%20-not-found
 
 If you don't want to read that, the following commands solved that issue for me,
 and hopefully will for you too;
-```
+```{bash}
 apt-file search gdal-config
 sudo apt-get install libgdal1-dev
 sudo apt-get update 
@@ -316,7 +316,7 @@ NHM_Pangolins <- countNumbOverlaps(NHM_Pangolins)
 And there is a final step for preparing the convex hull data for analysis, which is 
 reducing the data set to a single entry per species;
 ```{r}
-myvars <- c('binomial', 'Decade', 'Percent_overlap', 'distance')
+myvars <- c('binomial', 'Percent_overlap', 'distance')
 NHM_Pangolins_hulls <- NHM_Pangolins_hulls[myvars]
 NHM_Pangolins_hulls <- unique(NHM_Pangolins_hulls)
 
@@ -362,19 +362,22 @@ p2 <- ggplot(NHM_Pangolins, aes(x=as.numeric(Decade), y=Percent_overlap)) +
   geom_point()
 # p2
 p3 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=Percent_overlap)) +
-  geom_boxplot() +
+  geom_point() +
   scale_x_discrete(labels = abbreviate)
 # p
-p4 <- ggplot(NHM_Pangolins_hulls, aes(x=as.numeric(Decade), y=Percent_overlap)) +
-  geom_point()
-# p3 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
-#   geom_boxplot() +
-#   scale_x_discrete(labels = abbreviate)
+# p4 <- ggplot(NHM_Pangolins_hulls, aes(x=distance, y=Percent_overlap)) +
+#   geom_point()
+p5 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
+  geom_point() +
+  scale_x_discrete(labels = abbreviate)
+p6 <- ggplot(NHM_Pangolins, aes(group = binomial, x=Percent_overlap, y=numberOfOverlaps)) +
+  geom_boxplot()
+p6
 # # p3
 # p4 <- ggplot(NHM_Pangolins_hulls, aes(x=Decade, y=distance)) +
 #   geom_point()
 # # p4
-gridExtra::grid.arrange(p, p2, p3, p4, ncol=2)
+gridExtra::grid.arrange(p, p2, p3, p5, ncol=2)
 ```
 To my eye both overlap and centroid-edge distance show species dependent patterns, 
 whereas decade doesn't show any strong trends. However, I think it is still worth 
@@ -382,52 +385,38 @@ investigating the effect decade has on predicting both overlap and distance.
 ```{r}
 # Then I model to see if the trends I think I'm seeing are actually there
 # does not converge
-test <- glm(cbind(NHM_Pangolins$numberOfOverlaps, (NHM_Pangolins$numberOfSpecimens - NHM_Pangolins$numberOfOverlaps)) ~ NHM_Pangolins$binomial, family = 'quasibinomial')
+test <- glm(cbind(numberOfOverlaps, (numberOfSpecimens - numberOfOverlaps)) ~ 
+              binomial, data=NHM_Pangolins, family = 'binomial')
 # probably massively overdispersed 
-test1 <- glm(cbind(NHM_Pangolins$numberOfOverlaps, (NHM_Pangolins$numberOfSpecimens - NHM_Pangolins$numberOfOverlaps)) ~ NHM_Pangolins$Decade, family = 'quasibinomial')
+test1 <- glm(cbind(numberOfOverlaps, (numberOfSpecimens - numberOfOverlaps)) ~ 
+               Decade, data = NHM_Pangolins, family = 'quasibinomial')
 # Check for overdispersion (should be < 2)
 sum_model1 <- summary(test1)
 sum_model1$deviance / sum_model1$df.resid 
 plot(test1)
 anova(test1, test = "F")
 summary(test1)
+# could do third model, numbOverlaps as fun of continent
+test2 <- glm(cbind(numberOfOverlaps, (numberOfSpecimens - numberOfOverlaps)) ~ 
+               Continent, data = NHM_Pangolins, family = 'binomial')
+plot(test2)
+sum_model2 <- summary(test2)
+sum_model2$deviance / sum_model2$df.resid 
+anova(test2, test = "F")
+summary(test2)
+ 
+# Hulls dont appear to be working and I'm struggling to troubleshoot those
+class(NHM_Pangolins_hulls$binomial)
+class(NHM_Pangolins_hulls$Percent_overlap)
 
+NHM_Pangolins_hulls$binomial <- as.factor(NHM_Pangolins_hulls$binomial)
+View(NHM_Pangolins_hulls)
+# similarly could do third model here for continent, percentage overlap or distance
+hullModel <- glm(Percent_overlap ~ binomial, data = NHM_Pangolins_hulls, 
+                 family = 'binomial')
+hullModel2 <- glm(distance ~ binomial, data = NHM_Pangolins_hulls)
+plot(hullModel2)
 
-bin <- glm(NHM_Pangolins$binomial_overlap ~ NHM_Pangolins$Decade + NHM_Pangolins$binomial, family = 'binomial')
-bin2 <- glm(NHM_Pangolins$binomial_overlap ~ NHM_Pangolins$Decade, family = 'binomial')
-bin3 <- glm(NHM_Pangolins$binomial_overlap ~ NHM_Pangolins$binomial, family = 'binomial')
-summary(bin)
-summary(bin2)
-summary(bin3)
-
-dist <- glm(NHM_Pangolins$distance ~ NHM_Pangolins$Decade + NHM_Pangolins$binomial)
-dist2 <- glm(NHM_Pangolins$distance ~ NHM_Pangolins$Decade)
-dist3 <- (NHM_Pangolins$distance ~ NHM_Pangolins$binomial)
-summary(dist)
-summary(dist2)
-summary(dist3)
-
-# 
-# binomialModel <- glmer(binomial_overlap ~ Year + (1|binomial), 
-#                        data = NHM_Pangolins, family = 'binomial')
-# distanceModel <- lmer(1/log(distance) ~ Decade + (1|binomial),
-#                        data = NHM_Pangolins)
-# 
-# # And then we plot some these just to see
-# # WILL BE USING GGPLOT FOR THIS BUT FOR STARTERS LETS JUST BASE PLOT
-# plot(binomialModel)
-# plot(distanceModel)
-# # or potentially
-# 
-# binomialModel2 <- glmer(binomial_overlap ~ binomial + (1|Decade), 
-#                        data = NHM_Pangolins, family = 'binomial')
-# distanceModel2 <- lmer(distance ~ binomial + (1|Decade),
-#                        data = NHM_Pangolins)
-# 
-# # And then we plot some these just to see
-# # WILL BE USING GGPLOT FOR THIS BUT FOR STARTERS LETS JUST BASE PLOT 
-# plot(binomialModel2)
-# plot(distanceModel2)
 ```
 Modelling decade as a predictor of overlap does give a statistically significant
 result (p < 0.005, READ UP ON REPORTING LINEAR MODELS), as does modelling distance
