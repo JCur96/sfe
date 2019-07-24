@@ -42,6 +42,7 @@ makeLandClippedHulls <- function(x) {
     # sets to correct (long/lat) crs for comparison
     # subsetOfDf <- st_set_crs(subsetOfDf, 4326)
     # print(var)
+    # clippedHull <- st_intersection(subsetOfDf$geometry, landMap)
     clippedHull <- suppressMessages(st_intersection(lwgeom::st_make_valid(subsetOfDf$geometry),
                                                     lwgeom::st_make_valid(landMap)))
     if (purrr::is_empty(clippedHull)) {

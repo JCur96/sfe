@@ -186,6 +186,8 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)
 print(p)
+# ggsave('../output/plot1', p, 'png')
+
 ```
 
 Not all maps will seem to show anything interesting, but that is mostly due to 
@@ -234,7 +236,7 @@ NHM_Pangolins_hulls <- makeConvexHulls(NHM_Pangolins_hulls)
 NHM_Pangolins_hulls <- clipHullsToLand(NHM_Pangolins_hulls)
 #If you know you want hulls which are clipped to landmasses from the start you 
 # can use the following function
-NHM_Pangolins_hulls <- makeLandClippedHulls(NHM_Pangolins_hulls)
+# NHM_Pangolins_hulls <- makeLandClippedHulls(NHM_Pangolins_hulls)
 ```
 
 All of the above will give a percentage overlap with IUCN convex hulls, but for 
@@ -263,6 +265,7 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)
 print(p)
+# ggsave('../output/plot2', p, 'png')
 plotMaps(NHM_Pangolins_hulls, IUCN, path = '../output/convex_hull_graphs/')
 ```
 
@@ -316,9 +319,13 @@ NHM_Pangolins <- countNumbOverlaps(NHM_Pangolins)
 And there is a final step for preparing the convex hull data for analysis, which is 
 reducing the data set to a single entry per species;
 ```{r}
-myvars <- c('binomial', 'Continent', 'Percent_overlap', 'distance')
+# myvars <- c('binomial', 'Continent', 'Percent_overlap', 'distance')
+# class(NHM_Pangolins_hulls$Continent)
+# NHM_Pangolins_hulls$Continent <- as.character(NHM_Pangolins_hulls$Continent)
+myvars <- c('binomial', 'Percent_overlap', 'distance')
 NHM_Pangolins_hulls <- NHM_Pangolins_hulls[myvars]
 NHM_Pangolins_hulls <- unique(NHM_Pangolins_hulls)
+# View(NHM_Pangolins_hulls)
 
 ```
 
@@ -406,21 +413,22 @@ anova(test2, test = "F")
 summary(test2)
  
 # Hulls dont appear to be working and I'm struggling to troubleshoot those
-# class(NHM_Pangolins_hulls$binomial)
-# class(NHM_Pangolins_hulls$Percent_overlap)
+class(NHM_Pangolins_hulls$binomial)
+class(NHM_Pangolins_hulls$Percent_overlap)
 
 # NHM_Pangolins_hulls$binomial <- as.factor(NHM_Pangolins_hulls$binomial)
 # View(NHM_Pangolins_hulls)
 # similarly could do third model here for continent, percentage overlap or distance
-hullModel <- glm(Percent_overlap ~ binomial, data = NHM_Pangolins_hulls, 
+hullModel <- glm(Percent_overlap ~ as.factor(binomial), data = NHM_Pangolins_hulls, 
                  family = 'binomial')
 sum_model <- summary(hullModel)
 sum_model$deviance / sum_model$df.resid 
-anova(test2, test = "F")
+anova(hullModel, test = "F")
 summary(hullModel)
 
 hullModel2 <- glm(distance ~ binomial, data = NHM_Pangolins_hulls, 
                   family = 'gaussian')
+plot(hullModel2)
 sum_model2 <- summary(hullModel2)
 sum_model2$deviance / sum_model2$df.resid 
 anova(hullModel2, test = "F")
@@ -431,7 +439,7 @@ hullmodel3  <- glm(Percent_overlap ~ as.factor(Continent), data = NHM_Pangolins_
 sum_model3 <- summary(hullmodel3)
 sum_model3$deviance / sum_model3$df.resid 
 anova(hullmodel3, test = "F")
-summary(test2)
+summary(hullModel3)
 
 ```
 Modelling decade as a predictor of overlap does give a statistically significant
