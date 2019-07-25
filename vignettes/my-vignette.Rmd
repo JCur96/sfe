@@ -325,6 +325,12 @@ reducing the data set to a single entry per species;
 myvars <- c('binomial', 'Percent_overlap', 'distance')
 NHM_Pangolins_hulls <- NHM_Pangolins_hulls[myvars]
 NHM_Pangolins_hulls <- unique(NHM_Pangolins_hulls)
+myvars <- c('binomial', 'Continent')
+tmp <- NHM_Pangolins[myvars]
+tmp <- st_drop_geometry(tmp)
+tmp <- unique(tmp)
+# View(tmp)
+tmp <- merge(NHM_Pangolins_hulls, tmp, by = 'binomial')
 # View(NHM_Pangolins_hulls)
 
 ```
@@ -396,7 +402,7 @@ test <- glm(cbind(numberOfOverlaps, (numberOfSpecimens - numberOfOverlaps)) ~
               binomial, data=NHM_Pangolins, family = 'binomial')
 # probably massively overdispersed 
 test1 <- glm(cbind(numberOfOverlaps, (numberOfSpecimens - numberOfOverlaps)) ~ 
-               Decade, data = NHM_Pangolins, family = 'quasibinomial')
+               Decade, data = NHM_Pangolins, family = 'binomial')
 # Check for overdispersion (should be < 2)
 sum_model1 <- summary(test1)
 sum_model1$deviance / sum_model1$df.resid 
