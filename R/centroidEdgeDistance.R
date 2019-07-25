@@ -29,6 +29,8 @@ centroidEdgeDistance <- function(x, y) {
     centroid <- st_centroid(subsetOfDf$geometry)
     edgeDist <- st_distance(centroid, subsetOfIUCN$geometry)
     edgeDist <- units::drop_units(edgeDist)
+    edgeDist <- edgeDist/1000
+    # print(edgeDist)
     # allows for handling of cases of zero overlap
     if (purrr::is_empty(edgeDist) == T) {
       # as it otherwise returns a list of length zero, which cannot be appended to a df

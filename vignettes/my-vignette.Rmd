@@ -330,7 +330,7 @@ tmp <- NHM_Pangolins[myvars]
 tmp <- st_drop_geometry(tmp)
 tmp <- unique(tmp)
 # View(tmp)
-tmp <- merge(NHM_Pangolins_hulls, tmp, by = 'binomial')
+NHM_Pangolins_hulls <- merge(NHM_Pangolins_hulls, tmp, by = 'binomial')
 # View(NHM_Pangolins_hulls)
 
 ```
@@ -367,30 +367,50 @@ First I plot out the data to look for any trends;
 # can do point graph 
 # STOP WRITING UTILISE 
 # make bullet pointed lists before I start writing
+# Think that as of 12:50 on 25/07/19 these are my for graphs for results data vis
+# now just need to convert NHM_Pangolins_hulls into a table minus geom and that is 
+# a results section 
 p <- ggplot(NHM_Pangolins, aes(x=binomial, y=Percent_overlap)) +
   geom_boxplot() +
   scale_x_discrete(labels = abbreviate)
 # p
-p2 <- ggplot(NHM_Pangolins, aes(x=as.numeric(Decade), y=Percent_overlap)) +
+p1 <- ggplot(NHM_Pangolins, aes(x=as.numeric(Decade), y=Percent_overlap)) +
   geom_point()
 # p2
-p3 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=Percent_overlap)) +
-  geom_point() +
-  scale_x_discrete(labels = abbreviate)
+# p3 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=Percent_overlap)) +
+#   geom_point() +
+#   scale_x_discrete(labels = abbreviate)
 # p
 # p4 <- ggplot(NHM_Pangolins_hulls, aes(x=distance, y=Percent_overlap)) +
 #   geom_point()
-p5 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
+p2 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
   geom_point() +
   scale_x_discrete(labels = abbreviate)
-p6 <- ggplot(NHM_Pangolins, aes(group = binomial, x=Percent_overlap, y=numberOfOverlaps)) +
+# this is dumb so no
+# p6 <- ggplot(NHM_Pangolins, aes(group = binomial, x=Percent_overlap, y=numberOfOverlaps)) +
+#   geom_boxplot()
+# p6
+# one of those would be interesting to have
+# p7 <- ggplot(NHM_Pangolins, aes(x=Continent, y=numberOfOverlaps)) +
+#   geom_boxplot()
+# p7
+# probs this one
+# p7 <- ggplot(NHM_Pangolins, aes(x=Continent, y=Percent_overlap)) +
+#   geom_boxplot()
+# p7
+# Think this might be quite interesting to include maybe 
+p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
   geom_boxplot()
-p6
-# # p3
+# p8
+# not super uesful actually
+# p9 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=Percent_overlap)) +
+#   geom_boxplot()
+# p9
+# # # p3
 # p4 <- ggplot(NHM_Pangolins_hulls, aes(x=Decade, y=distance)) +
 #   geom_point()
 # # p4
-gridExtra::grid.arrange(p, p2, p3, p5, ncol=2)
+gridExtra::grid.arrange(p, p1, p2, p3, ncol=2)
 ```
 To my eye both overlap and centroid-edge distance show species dependent patterns, 
 whereas decade doesn't show any strong trends. However, I think it is still worth 
@@ -417,35 +437,40 @@ sum_model2 <- summary(test2)
 sum_model2$deviance / sum_model2$df.resid 
 anova(test2, test = "F")
 summary(test2)
+
+# instead of doing all of the below, just make a table with that information in 
+# it, or a world map showing overlaps or the like. Also add the exploratory graphs
+# perhaps as those are interesting.
  
 # Hulls dont appear to be working and I'm struggling to troubleshoot those
 class(NHM_Pangolins_hulls$binomial)
 class(NHM_Pangolins_hulls$Percent_overlap)
-
+View(NHM_Pangolins_hulls)
 # NHM_Pangolins_hulls$binomial <- as.factor(NHM_Pangolins_hulls$binomial)
 # View(NHM_Pangolins_hulls)
 # similarly could do third model here for continent, percentage overlap or distance
-hullModel <- glm(Percent_overlap ~ as.factor(binomial), data = NHM_Pangolins_hulls, 
-                 family = 'binomial')
-sum_model <- summary(hullModel)
-sum_model$deviance / sum_model$df.resid 
-anova(hullModel, test = "F")
-summary(hullModel)
-
-hullModel2 <- glm(distance ~ binomial, data = NHM_Pangolins_hulls, 
-                  family = 'gaussian')
-plot(hullModel2)
-sum_model2 <- summary(hullModel2)
-sum_model2$deviance / sum_model2$df.resid 
-anova(hullModel2, test = "F")
-summary(hullModel2)
-
-hullmodel3  <- glm(Percent_overlap ~ as.factor(Continent), data = NHM_Pangolins_hulls, 
-                   family = 'quasibinomial')
-sum_model3 <- summary(hullmodel3)
-sum_model3$deviance / sum_model3$df.resid 
-anova(hullmodel3, test = "F")
-summary(hullModel3)
+# hullModel <- glm(Percent_overlap ~ as.factor(binomial), data = NHM_Pangolins_hulls, 
+#                  family = 'binomial')
+# sum_model <- summary(hullModel)
+# sum_model$deviance / sum_model$df.resid 
+# anova(hullModel, test = "F")
+# summary(hullModel)
+# 
+# # I don't think this is a sensible thing to look at actually. 
+# hullModel2 <- glm(distance ~ binomial, data = NHM_Pangolins_hulls, 
+#                   family = 'gaussian')
+# plot(hullModel2)
+# sum_model2 <- summary(hullModel2)
+# sum_model2$deviance / sum_model2$df.resid 
+# anova(hullModel2, test = "F")
+# summary(hullModel2)
+# 
+# hullmodel3  <- glm(Percent_overlap ~ as.factor(Continent), data = NHM_Pangolins_hulls, 
+#                    family = 'quasibinomial')
+# sum_model3 <- summary(hullmodel3)
+# sum_model3$deviance / sum_model3$df.resid 
+# anova(hullmodel3, test = "F")
+# summary(hullModel3)
 
 ```
 Modelling decade as a predictor of overlap does give a statistically significant
