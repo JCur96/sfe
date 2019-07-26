@@ -186,7 +186,7 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)
 print(p)
-# ggsave('../output/plot1', p, 'png')
+# ggsave('../output/plot1.png', p, 'png')
 
 ```
 
@@ -265,7 +265,7 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)
 print(p)
-# ggsave('../output/plot2', p, 'png')
+# ggsave('../output/plot2.png', p, 'png')
 plotMaps(NHM_Pangolins_hulls, IUCN, path = '../output/convex_hull_graphs/')
 ```
 
@@ -374,22 +374,34 @@ First I plot out the data to look for any trends;
 
 p <- ggplot(NHM_Pangolins, aes(x=binomial, y=Percent_overlap)) +
   geom_boxplot() +
-  scale_x_discrete(labels = abbreviate)
+  scale_x_discrete(labels = abbreviate) +
+  xlab('Binomial Name') +
+  ylab('Percentage Overlap') +
+  theme(axis.text.x = element_text(angle = 45))
+        # (margin = margin(t = 0, r = 20, b = 20, l = 0)))
 p1 <- ggplot(NHM_Pangolins, aes(x=as.numeric(Decade), y=Percent_overlap)) +
-  geom_point()
+  geom_point()+
+  xlab('Decade of Collection') +
+  ylab('Percentage Overlap')
 p2 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
   geom_point() +
-  scale_x_discrete(labels = abbreviate)
+  scale_x_discrete(labels = abbreviate)+
+  xlab('Binomial Name') +
+  ylab('Centroid-Edge Distance (km)') +
+  theme(axis.text.x = element_text(angle = 45))
 p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
-  geom_boxplot()
-p4 <- ggplot(NHM_Pangolins, aes(x=Continent, y=Percent_overlap)) +
-  geom_boxplot()
-p4
-p5 <- ggplot(NHM_Pangolins, aes(group = binomial, x=Continent, y=numberOfOverlaps)) +
-  geom_point()
-p5
+  geom_boxplot()+
+  xlab('Continent') +
+  ylab('Percentage Overlap')
+
+# p4 <- ggplot(NHM_Pangolins, aes(x=Continent, y=Percent_overlap)) +
+#   geom_boxplot()
+# p4
+# p5 <- ggplot(NHM_Pangolins, aes(group = binomial, x=Continent, y=numberOfOverlaps)) +
+#   geom_point()
+# p5
 dataPlots <- gridExtra::grid.arrange(p, p1, p2, p3, ncol=2)
-ggsave(filename = '../output/dataPlots', plot = dataPlots, device = 'png')
+ggsave(filename = '../output/dataPlots.png', plot = dataPlots, device = 'png')
 ```
 To my eye both overlap and centroid-edge distance show species dependent patterns, 
 whereas decade doesn't show any strong trends. However, I think it is still worth 
