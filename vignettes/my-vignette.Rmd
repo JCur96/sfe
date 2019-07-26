@@ -425,7 +425,7 @@ summary(model2)
 # perhaps as those are interesting.
 
 NHM_Pangolins_hulls <- st_drop_geometry(NHM_Pangolins_hulls)
-
+write.table(NHM_Pangolins_hulls, file = '../output/convexHulls')
 ```
 Modelling decade as a predictor of overlap does give a statistically significant
 result (p < 0.005, READ UP ON REPORTING LINEAR MODELS), as does modelling distance
