@@ -590,6 +590,24 @@ method.
 ```{r}
 NHM_Pangolins$Extent..m. <- (NHM_Pangolins$Extent..m. /1000)
 NHM_Pangolins <- NHM_Pangolins %>% rename(Extent_km = Extent..m.)
+# Here I make a plot to demonstrate how the NHM has been using georeferenced 
+# specimens
+egForPlot <-NHM_Pangolins %>% filter(binomial == 'Smutsia_temminckii')
+IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_temminckii')
+bbox <- c(-14.414063,-37.996163,53.613281,27.994401)
+xlim <- c(bbox[1], bbox[3])
+ylim <- c(bbox[2], bbox[4])
+landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>% 
+  st_union()
+p = ggplot(data = landMap) + 
+  geom_sf() +
+  geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
+  geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = T) +
+  theme_bw()
+print(p)
+ggsave('../output/previous_work.png', p, 'png')
+# I then add error to the plot
 NHM_Pangolins <- addError(NHM_Pangolins)
 # head(NHM_Pangolins)
 ```
@@ -603,7 +621,6 @@ point-radius data.
 # when you run this funciton. This both saves computer time and memory, whilst 
 # allowing you as the user to browse all the maps at your leisure. 
 plotMaps(NHM_Pangolins, IUCN, path = '../output/point_radius_graphs/')
-
 # Here is an example of a single plot from that command, or how to plot just one
 # graph that is of interest
 egForPlot <-NHM_Pangolins %>% filter(binomial == 'Smutsia_temminckii')
@@ -618,9 +635,10 @@ p = ggplot(data = landMap) +
   geom_sf() +
   geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
-  coord_sf(xlim = xlim, ylim = ylim, expand = T)
+  coord_sf(xlim = xlim, ylim = ylim, expand = T)  +
+  theme_bw()
 print(p)
-# ggsave('../output/plot1.png', p, 'png')
+ggsave('../output/point_radius_demo.png', p, 'png')
 
 ```
 
@@ -697,9 +715,10 @@ p = ggplot(data = landMap) +
   geom_sf() +
   geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
-  coord_sf(xlim = xlim, ylim = ylim, expand = T)
+  coord_sf(xlim = xlim, ylim = ylim, expand = T) +
+  theme_bw()
 print(p)
-# ggsave('../output/plot2.png', p, 'png')
+ggsave('../output/convex_hull_demo.png', p, 'png')
 plotMaps(NHM_Pangolins_hulls, IUCN, path = '../output/convex_hull_graphs/')
 ```
 
@@ -733,14 +752,50 @@ be of interest with regards to analysis and modelling, and does not requrie any
 flattening to use. Here I use it on both data sets, as they will tell me something
 subtly different once analysed;
 ```{r}
-NHM_Pangolins <- centroidEdgeDistance(NHM_Pangolins, IUCN)
-NHM_Pangolins_hulls <- centroidEdgeDistance(NHM_Pangolins_hulls, IUCN)
+NHM_Pangolins <- centroidCentroidDistance(NHM_Pangolins, IUCN)
+# NHM_Pangolins <- centroidEdgeDistance(NHM_Pangolins, IUCN)
+NHM_Pangolins_hulls <- centroidCentroidDistance(NHM_Pangolins_hulls, IUCN)
+# NHM_Pangolins_hulls <- centroidEdgeDistance(NHM_Pangolins_hulls, IUCN)
 # head(NHM_Pangolins)
 ```
 
 This returns the NHM data frame with added an added distance column (and a 
 distance2 column, as there are a few IUCN records with two range polygons, and 
 without this inclusion the function will not run). 
+
+I would like to create a visual example of what centroid-centroid distance is 
+finding, so I will do that below; 
+```{r}
+# Here is an example of a single plot from that command, or how to plot just one
+# graph that is of interest
+egForPlot <-NHM_Pangolins_hulls %>% filter(binomial == 'Smutsia_temminckii')
+IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_temminckii')
+egForPlot <- st_transform(egForPlot$geometry, 2163)
+IUCNForPlot <- st_transform(IUCNForPlot$geometry, 2163)
+egForPlotCentroid <- st_centroid(egForPlot)
+IUCNForPlotCentroid <- st_centroid(IUCNForPlot)
+egForPlotCentroid <- st_transform(egForPlotCentroid, 4326)
+IUCNForPlotCentroid <- st_transform(IUCNForPlotCentroid, 4326)
+egForPlot <- st_transform(egForPlot, 4326)
+IUCNForPlot <- st_transform(IUCNForPlot, 4326)
+# puts the coords into the order expected down in ggmap coords
+bbox <- c(-14.414063,-37.996163,53.613281,27.994401)
+xlim <- c(bbox[1], bbox[3])
+ylim <- c(bbox[2], bbox[4])
+landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>% 
+  st_union()
+landMap <- st_transform(landMap, 4326)
+p = ggplot(data = landMap) + 
+  geom_sf() +
+  geom_sf(mapping = aes(alpha = 1, fill='blue'), data = egForPlotCentroid , show.legend = F) +
+  geom_sf(mapping = aes(alpha = 1, fill='red'), data = IUCNForPlotCentroid , show.legend = F) +
+  geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
+  geom_sf(mapping = aes(alpha = 0.5, fill = "red"), data = IUCNForPlot, show.legend = F) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = T) +
+  theme_bw()
+print(p)
+ggsave('../output/centroid_distance_demo.png', p, 'png')
+```
 
 There is a final step for preparing the point-radius data, which is generating 
 counts of successes/failures for overlaps;
@@ -807,26 +862,30 @@ First I plot out the data to look for any trends;
 # need to get the scaling better and make the axis titles pretty plus inc panel labells
 
 p <- ggplot(NHM_Pangolins, aes(x=binomial, y=Percent_overlap)) +
-  geom_boxplot() +
+  geom_boxplot()+
   scale_x_discrete(labels = abbreviate) +
   xlab('Binomial Name') +
   ylab('Percentage Overlap') +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 45))
         # (margin = margin(t = 0, r = 20, b = 20, l = 0)))
 p1 <- ggplot(NHM_Pangolins, aes(x=as.numeric(Decade), y=Percent_overlap)) +
   geom_point()+
   xlab('Decade of Collection') +
-  ylab('Percentage Overlap')
+  ylab('Percentage Overlap') +
+  theme_bw()
 p2 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
   geom_point() +
   scale_x_discrete(labels = abbreviate)+
   xlab('Binomial Name') +
-  ylab('Centroid-Edge Distance (km)') +
+  ylab('Centroid-Centroid Distance (km)') +
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 45))
 p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
   geom_boxplot()+
   xlab('Continent') +
-  ylab('Percentage Overlap')
+  ylab('Percentage Overlap') +
+  theme_bw()
 
 # p4 <- ggplot(NHM_Pangolins, aes(x=Continent, y=Percent_overlap)) +
 #   geom_boxplot()
@@ -853,7 +912,7 @@ model1 <- glm(cbind(numberOfOverlaps, (numberOfSpecimens - numberOfOverlaps)) ~
 sum_model1 <- summary(model1)
 sum_model1$deviance / sum_model1$df.resid 
 # plot(model1)
-anova(model1, test = "F")
+anova(model1, test = "Chisq")
 summary(model1)
 
 # This model is significant, with continent significantly predicting the number 
@@ -863,7 +922,7 @@ model2 <- glm(cbind(numberOfOverlaps, (numberOfSpecimens - numberOfOverlaps)) ~
 # plot(model2)
 sum_model2 <- summary(model2)
 sum_model2$deviance / sum_model2$df.resid 
-anova(model2, test = "F")
+anova(model2, test = "Chisq")
 summary(model2)
 
 # for hulls, just make a table with that information in 

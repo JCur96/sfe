@@ -3,6 +3,7 @@
 export(addError)
 export(binomialOverlap)
 export(calculateOverlaps)
+export(centroidCentroidDistance)
 export(centroidEdgeDistance)
 export(clipHullsToLand)
 export(correctColName)
