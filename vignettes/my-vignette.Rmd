@@ -881,8 +881,8 @@ p <- ggplot(NHM_Pangolins, aes(x=binomial, y=Percent_overlap)) +
   xlab('Binomial Name') +
   ylab('Percentage Overlap') +
   labs(tag = 'a') +
-  theme_bw(base_size = 14) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.7)) +
+  theme_bw(base_size = 20) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   stat_summary(fun.data = 'mean_sdl', fun.args = list(mult=1), geom = 'errorbar', color = 'black', width = 0.2) +
   stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 2)
         # (margin = margin(t = 0, r = 20, b = 20, l = 0)))
@@ -891,21 +891,21 @@ p1 <- ggplot(NHM_Pangolins, aes(x=as.numeric(Decade), y=Percent_overlap)) +
   xlab('Decade of Collection') +
   ylab('Percentage Overlap') +
   labs(tag = 'b') +
-  theme_bw(base_size = 14)
+  theme_bw(base_size = 20)
 p2 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
   geom_point() +
   scale_x_discrete(labels = abbreviate)+
   xlab('Binomial Name') +
   ylab('Centroid-Centroid Distance (km)') +
   labs(tag = 'c') +
-  theme_bw(base_size = 14) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.7))
+  theme_bw(base_size = 20) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
   geom_point(color = 'grey') +
   xlab('Continent') +
   ylab('Percentage Overlap') +
   labs(tag = 'd') +
-  theme_bw(base_size = 14) +
+  theme_bw(base_size = 20) +
   stat_summary(fun.data = 'mean_sdl', fun.args = list(mult=1), geom = 'errorbar', color = 'black', width = 0.2) +
   stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 2)
         # (margin = margin(t = 0, r = 20, b = 20, l = 0)))
@@ -918,7 +918,8 @@ p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
 # p5
 dataPlots <- gridExtra::grid.arrange(p, p1, p2, p3, ncol=2)
 # dataPlots <- cowplot::plot_grid(p, p1, p2, p3, labels= 'AUTO')
-suppressMessages(ggsave(filename = '../output/figure5.pdf', plot = dataPlots, device = 'pdf'))
+# print(dataPlots)
+suppressMessages(ggsave(filename = '../output/figure5.pdf', plot = dataPlots, device = 'pdf', height = 10, width = 10))
 ```
 To my eye both overlap and centroid-edge distance show species dependent patterns, 
 whereas decade doesn't show any strong trends. However, I think it is still worth 
