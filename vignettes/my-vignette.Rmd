@@ -187,7 +187,7 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)
 print(p)
-# ggsave('../output/plot1', p, 'png')
+# ggsave('../output/figure4a.pdf', p, 'pdf')
 
 ```
 
@@ -606,7 +606,7 @@ p = ggplot(data = landMap) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T) +
   theme_bw()
 print(p)
-ggsave('../output/previous_work.png', p, 'png')
+suppressMessages(ggsave('../output/figure1.pdf', p, 'pdf'))
 # I then add error to the plot
 NHM_Pangolins <- addError(NHM_Pangolins)
 # head(NHM_Pangolins)
@@ -636,9 +636,11 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)  +
+  # labs(tag = 'a') +
+  theme(plot.margin = unit(c(0, 0, 0, 0), "cm")) +
   theme_bw()
 print(p)
-ggsave('../output/point_radius_demo.png', p, 'png')
+suppressMessages(ggsave('../output/figure4a.pdf', p, 'pdf'))
 
 ```
 
@@ -711,14 +713,20 @@ xlim <- c(bbox[1], bbox[3])
 ylim <- c(bbox[2], bbox[4])
 landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>% 
   st_union()
-p = ggplot(data = landMap) + 
+p1 = ggplot(data = landMap) + 
   geom_sf() +
   geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T) +
+  # labs(tag = 'b') +
+  theme(plot.margin = unit(c(0, 0, 0, 0), "cm")) +
   theme_bw()
-print(p)
-ggsave('../output/convex_hull_demo.png', p, 'png')
+print(p1)
+suppressMessages(ggsave('../output/figure4b.pdf', p1, 'pdf'))
+fig4 <- cowplot::plot_grid(p, p1, labels= 'AUTO')
+# fig4 <- gridExtra::grid.arrange(p, p1, ncol=2)
+print(fig4)
+suppressMessages(ggsave('../output/figure4.pdf', fig4, 'pdf') )
 plotMaps(NHM_Pangolins_hulls, IUCN, path = '../output/convex_hull_graphs/')
 ```
 
@@ -770,12 +778,14 @@ finding, so I will do that below;
 # graph that is of interest
 egForPlot <-NHM_Pangolins_hulls %>% filter(binomial == 'Smutsia_temminckii')
 IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_temminckii')
-egForPlot <- st_transform(egForPlot$geometry, 2163)
-IUCNForPlot <- st_transform(IUCNForPlot$geometry, 2163)
-egForPlotCentroid <- st_centroid(egForPlot)
-IUCNForPlotCentroid <- st_centroid(IUCNForPlot)
+egForPlot <- st_transform(egForPlot$geometry, 4326)
+IUCNForPlot <- st_transform(IUCNForPlot$geometry, 4326)
+egForPlotCentroid <- suppressWarnings(st_centroid(egForPlot))
+IUCNForPlotCentroid <- suppressWarnings(st_centroid(IUCNForPlot))
 egForPlotCentroid <- st_transform(egForPlotCentroid, 4326)
 IUCNForPlotCentroid <- st_transform(IUCNForPlotCentroid, 4326)
+# egForPlotCentroid
+# IUCNForPlotCentroid
 egForPlot <- st_transform(egForPlot, 4326)
 IUCNForPlot <- st_transform(IUCNForPlot, 4326)
 # puts the coords into the order expected down in ggmap coords
@@ -787,14 +797,17 @@ landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>%
 landMap <- st_transform(landMap, 4326)
 p = ggplot(data = landMap) + 
   geom_sf() +
+  xlab('') +
+  ylab('') +
   geom_sf(mapping = aes(alpha = 1, fill='blue'), data = egForPlotCentroid , show.legend = F) +
   geom_sf(mapping = aes(alpha = 1, fill='red'), data = IUCNForPlotCentroid , show.legend = F) +
   geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
   geom_sf(mapping = aes(alpha = 0.5, fill = "red"), data = IUCNForPlot, show.legend = F) +
+  geom_segment(aes(x = 25.33025, y = -16.82715, xend = 28.45043, yend = -7.300178)) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T) +
   theme_bw()
 print(p)
-ggsave('../output/centroid_distance_demo.png', p, 'png')
+suppressMessages(ggsave('../output/figure3.pdf', p, 'pdf'))
 ```
 
 There is a final step for preparing the point-radius data, which is generating 
@@ -842,6 +855,7 @@ effect package should be sufficent.
 # install.packages('lmerTest')
 # library(lme4)
 # library(lmerTest)
+library(Hmisc)
 ```
 
 In theory, the data have now been treated in such a way that constructing the 
@@ -862,30 +876,39 @@ First I plot out the data to look for any trends;
 # need to get the scaling better and make the axis titles pretty plus inc panel labells
 
 p <- ggplot(NHM_Pangolins, aes(x=binomial, y=Percent_overlap)) +
-  geom_boxplot()+
+  geom_point(color = 'grey') +
   scale_x_discrete(labels = abbreviate) +
   xlab('Binomial Name') +
   ylab('Percentage Overlap') +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45))
+  labs(tag = 'a') +
+  theme_bw(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45)) +
+  stat_summary(fun.data = 'mean_sdl', fun.args = list(mult=1), geom = 'errorbar', color = 'black', width = 0.2) +
+  stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 2)
         # (margin = margin(t = 0, r = 20, b = 20, l = 0)))
 p1 <- ggplot(NHM_Pangolins, aes(x=as.numeric(Decade), y=Percent_overlap)) +
   geom_point()+
   xlab('Decade of Collection') +
   ylab('Percentage Overlap') +
-  theme_bw()
+  labs(tag = 'b') +
+  theme_bw(base_size = 14)
 p2 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
   geom_point() +
   scale_x_discrete(labels = abbreviate)+
   xlab('Binomial Name') +
   ylab('Centroid-Centroid Distance (km)') +
-  theme_bw() +
+  labs(tag = 'c') +
+  theme_bw(base_size = 14) +
   theme(axis.text.x = element_text(angle = 45))
 p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
-  geom_boxplot()+
+  geom_point(color = 'grey') +
   xlab('Continent') +
   ylab('Percentage Overlap') +
-  theme_bw()
+  labs(tag = 'd') +
+  theme_bw(base_size = 14) +
+  stat_summary(fun.data = 'mean_sdl', fun.args = list(mult=1), geom = 'errorbar', color = 'black', width = 0.2) +
+  stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 2)
+        # (margin = margin(t = 0, r = 20, b = 20, l = 0)))
 
 # p4 <- ggplot(NHM_Pangolins, aes(x=Continent, y=Percent_overlap)) +
 #   geom_boxplot()
@@ -894,7 +917,8 @@ p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
 #   geom_point()
 # p5
 dataPlots <- gridExtra::grid.arrange(p, p1, p2, p3, ncol=2)
-ggsave(filename = '../output/dataPlots.png', plot = dataPlots, device = 'png')
+dataPlots <- cowplot::plot_grid(p, p1, p2, p3, labels= 'AUTO')
+suppressMessages(ggsave(filename = '../output/figure5.pdf', plot = dataPlots, device = 'pdf'))
 ```
 To my eye both overlap and centroid-edge distance show species dependent patterns, 
 whereas decade doesn't show any strong trends. However, I think it is still worth 
