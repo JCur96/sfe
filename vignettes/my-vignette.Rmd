@@ -538,7 +538,7 @@ input, but I promise they d0 work when they have correct input.
 
 First I read in the data from both Natural History Museum(NHM) and the IUCN.
 ```{r}
-NHM_Pangolins <- read.csv("../data/NHMPangolins - in.csv", header=T)
+NHM_Pangolins <- read.csv("../data/NHMPangolinsCompatability.csv", header=T)
 IUCN <- inReadOld(path = '../data', name = 'maps_pholidota')
 
 ```
@@ -636,8 +636,8 @@ p = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)  +
-  # labs(tag = 'a') +
-  theme(plot.margin = unit(c(0, 0, 0, 0), "cm")) +
+  labs(tag = 'a') +
+  theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) +
   theme_bw()
 print(p)
 suppressMessages(ggsave('../output/figure4a.pdf', p, 'pdf'))
@@ -718,15 +718,15 @@ p1 = ggplot(data = landMap) +
   geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T) +
-  # labs(tag = 'b') +
-  theme(plot.margin = unit(c(0, 0, 0, 0), "cm")) +
+  labs(tag = 'b') +
+  # theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) +
   theme_bw()
 print(p1)
 suppressMessages(ggsave('../output/figure4b.pdf', p1, 'pdf'))
-fig4 <- cowplot::plot_grid(p, p1, labels= 'AUTO')
-# fig4 <- gridExtra::grid.arrange(p, p1, ncol=2)
-print(fig4)
-suppressMessages(ggsave('../output/figure4.pdf', fig4, 'pdf') )
+# fig4 <- cowplot::plot_grid(p, p1, labels= 'AUTO', rel_heights = 0.5)
+fig4 <- gridExtra::grid.arrange(p, p1, ncol=2)
+# print(fig4)
+suppressMessages(ggsave('../output/figure4.pdf', fig4, 'pdf', height = 3) )
 plotMaps(NHM_Pangolins_hulls, IUCN, path = '../output/convex_hull_graphs/')
 ```
 
