@@ -876,7 +876,7 @@ First I plot out the data to look for any trends;
 # need to get the scaling better and make the axis titles pretty plus inc panel labells
 
 p <- ggplot(NHM_Pangolins, aes(x=binomial, y=Percent_overlap)) +
-  geom_point(color = 'grey') +
+  geom_point(color = 'grey', size = 5) +
   scale_x_discrete(labels = abbreviate) +
   xlab('Binomial Name') +
   ylab('Percentage Overlap') +
@@ -884,16 +884,16 @@ p <- ggplot(NHM_Pangolins, aes(x=binomial, y=Percent_overlap)) +
   theme_bw(base_size = 20) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   stat_summary(fun.data = 'mean_sdl', fun.args = list(mult=1), geom = 'errorbar', color = 'black', width = 0.2) +
-  stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 2)
+  stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 7)
         # (margin = margin(t = 0, r = 20, b = 20, l = 0)))
 p1 <- ggplot(NHM_Pangolins, aes(x=as.numeric(Decade), y=Percent_overlap)) +
-  geom_point()+
+  geom_point(size = 5)+
   xlab('Decade of Collection') +
   ylab('Percentage Overlap') +
   labs(tag = 'b') +
   theme_bw(base_size = 20)
 p2 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
-  geom_point() +
+  geom_point(size = 5) +
   scale_x_discrete(labels = abbreviate)+
   xlab('Binomial Name') +
   ylab('Centroid-Centroid Distance (km)') +
@@ -901,13 +901,13 @@ p2 <- ggplot(NHM_Pangolins_hulls, aes(x=binomial, y=distance)) +
   theme_bw(base_size = 20) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
-  geom_point(color = 'grey') +
+  geom_point(color = 'grey', size = 5) +
   xlab('Continent') +
   ylab('Percentage Overlap') +
   labs(tag = 'd') +
   theme_bw(base_size = 20) +
   stat_summary(fun.data = 'mean_sdl', fun.args = list(mult=1), geom = 'errorbar', color = 'black', width = 0.2) +
-  stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 2)
+  stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 7)
         # (margin = margin(t = 0, r = 20, b = 20, l = 0)))
 
 # p4 <- ggplot(NHM_Pangolins, aes(x=Continent, y=Percent_overlap)) +
