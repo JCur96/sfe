@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 title: "sfe: Simple Features Ecology"
 output: rmarkdown::html_vignette
