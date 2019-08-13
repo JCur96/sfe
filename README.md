@@ -1,7 +1,5 @@
-sfe: Simple Features Ecology
+sfe (Simple Features Ecology)
 ================
-
-# sfe (Simple Features Ecology)
 
 ## A Walkthrough Guide With a Test Case
 
