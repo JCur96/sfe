@@ -28,7 +28,7 @@ repository isn't signed so you will have to manually add this to trusted sources
 Please see apt-secure(8) manpage and sources.list(5) manpage for details on what
 this actually means before moving on to the next section and doing that with
 the following commands on Linux terminal;
-```{bash, message = FALSE, warning = FALSE}
+```{message = FALSE, warning = FALSE}
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
     && sudo apt-get update
 sudo gedit /etc/apt/sources.list.d/ubuntugis-ubuntu-ubuntu-ubuntugis-unstable-bionic.list
@@ -43,7 +43,7 @@ https://stackoverflow.com/questions/12141422/error-gdal-config%20-not-found
 
 If you don't want to read that, the following commands solved that issue for me,
 and hopefully will for you too;
-```{bash, message = FALSE, warning = FALSE}
+```
 apt-file search gdal-config
 sudo apt-get install libgdal1-dev
 sudo apt-get update
@@ -62,7 +62,7 @@ be sufficient.
 ## Installing sfe
 In R run the command `devtools::install_github("JCur96/sfe", force =T)` followed
 by
-```{r setup, message = FALSE, warning = FALSE}
+```{r, setup, message = FALSE, warning = FALSE}
 library(sfe)
 library(rgeos)
 library(rgdal)
@@ -525,4 +525,4 @@ NHM_Pangolins_hulls <- st_drop_geometry(NHM_Pangolins_hulls)
 Modelling decade as a predictor of overlap does give a statistically significant
 result (p < 0.005, READ UP ON REPORTING LINEAR MODELS), as does modelling distance
 as a function of both decade and species, in four cases (REPORT STATS HERE).
->>>>>>> 26f3eba425f5df91edb7e1e6b98bc43d20b50bf3
+
