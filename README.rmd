@@ -469,5 +469,3 @@ issues with. to do that run `install.packages("rgeos")` in R followed by
 The final dependency you should install previous to trying to use sfe is `devtools`
 This one is easy to install, simply running `install.packages("devtools")` should
 be sufficient.
-
-
