@@ -1,5 +1,5 @@
 # two input function for calculating the percentage overlap
-overlaps <- function(df1, df2) {
+calcOverlaps <- function(df1, df2) {
   df1 <- lwgeom::st_make_valid(df1)
   # gives percentage overlap between NHM and IUCN
   overlap <- st_intersection(df1, df2) %>% st_area() / st_area(df1, df2) * 100
@@ -38,7 +38,7 @@ hullOverFun <- function(df1, df2) {
     #geom <- st_set_crs(geom, 2163)
     geom <- st_transform(geom, 2163)
     # use previous fun to calculate overlaps
-    x <- overlaps(geom, df2$geometry)
+    x <- calcOverlaps(geom, df2$geometry)
     # and append to the percent overlap col
     # print(row)
     # if (purrr::is_empty(x) == T) {
