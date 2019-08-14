@@ -15,7 +15,7 @@
 #' @examples
 #' x <- centroidCentroidDistance(x, y)
 #' @export
-centroidCentroidDistance <- function(x, y) {
+calculateCentroidDistance <- function(x, y) {
   output <- c()
   x$distance <- NA
   x$distance2 <- NA
