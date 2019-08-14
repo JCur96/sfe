@@ -325,8 +325,8 @@ both data sets, as they will tell me something subtly different once
 analysed;
 
 ``` r
-NHM_Pangolins <- centroidCentroidDistance(NHM_Pangolins, IUCN)
-NHM_Pangolins_hulls <- centroidCentroidDistance(NHM_Pangolins_hulls, IUCN)
+NHM_Pangolins <- calculateCentroidDistance(NHM_Pangolins, IUCN)
+NHM_Pangolins_hulls <- calculateCentroidDistance(NHM_Pangolins_hulls, IUCN)
 ```
 
 This returns the NHM data frame with added an added distance column (and
