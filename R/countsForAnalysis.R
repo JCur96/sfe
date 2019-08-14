@@ -14,7 +14,7 @@
 #'
 #' @export
 countNumbSpecimens <- function(x) {
-  NHM_Pangolins['numberOfSpecimens'] <- NA
+  x['numberOfSpecimens'] <- NA
   output <- c()
   for (var in unique(x$binomial)) {
     subsetOfDf <- x[x$binomial == var,]
@@ -42,8 +42,8 @@ countNumbSpecimens <- function(x) {
 #' x <- countNumbOverlaps(x)
 #'
 #' @export
-countNumbOverlaps <- function(x) {
-  NHM_Pangolins['numberOfOverlaps'] <- NA
+x <- function(x) {
+  x['numberOfOverlaps'] <- NA
   output <- c()
   for (var in unique(x$binomial)) {
     # print(var)
