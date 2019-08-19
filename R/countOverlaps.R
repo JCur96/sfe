@@ -15,7 +15,7 @@
 #'
 #' @export
 countNumbOverlaps <- function(x) {
-  NHM_Pangolins['numberOfOverlaps'] <- NA
+  x['numberOfOverlaps'] <- NA
   output <- c()
   for (var in unique(x$binomial)) {
     # print(var)
