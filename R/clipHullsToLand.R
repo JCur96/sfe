@@ -23,9 +23,9 @@ clipHullsToLand <- function(x) {
   # making a world map of the land
   landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>%
     st_union()
-  landMap <- st_transform(landMap, 2163)
+  #landMap <- st_transform(landMap, 2163)
   # print(st_is_valid(landMap))
-  x <- st_transform(x, 2163)
+  #x <- st_transform(x, 2163)
   output <- c()
   for (var in unique(x$binomial)) {
     # print(var)
