@@ -1,6 +1,8 @@
 sfe (Simple Features Ecology)
 ================
 
+[![DOI](https://zenodo.org/badge/193727104.svg)](https://zenodo.org/badge/latestdoi/193727104)
+
 ## A Walkthrough Guide With a Test Case
 
 ### A Brief Note about Dependencies
@@ -54,12 +56,20 @@ interest;
 ``` r
 # First it is advisable that you check if you've got the data already
 sfe::mydata_versions()
-#> [1] "0.0.0.9001"
+#> character(0)
 # If not, you can check what versions are available on GitHub
 sfe::mydata_versions(local=F)
-#> [1] "0.0.0.9001"
+#> [1] "0.0.0.9001" "1.0"
 # From those you can choose the version you wish to work with
 myFakePangolinData <- sfe::mydata(version = '0.0.0.9001')
+#> 
+Downloading: 610 B     
+Downloading: 610 B     
+Downloading: 610 B     
+  |                                                                       
+  |                                                                 |   0%
+  |                                                                       
+  |=================================================================| 100%
 # Once you've made any edits to the data you can upload it to version control
 sfe::updateVersion()
 #> please enter new version number:
@@ -80,7 +90,7 @@ NHM_Pangolins <- read.csv("./data/NHMPangolinsCompatability.csv", header=T)
 IUCN <- inReadOld(path = './data', name = 'maps_pholidota')
 #> [1] "This may take some time"
 #> OGR data source with driver: ESRI Shapefile 
-#> Source: "/home/jake/Documents/RPackages/sfe/data", layer: "maps_pholidota"
+#> Source: "F:\GitRepos\sfe\sfe\data", layer: "maps_pholidota"
 #> with 45 features
 #> It has 27 fields
 ```
@@ -179,7 +189,7 @@ data.
 # when you run this function. This both saves computer time and memory, whilst
 # allowing you as the user to browse all the maps at your leisure.
 plotMaps(NHM_Pangolins, IUCN, path = '../output/point_radius_graphs/')
-#> Error in grid.newpage(): could not open file '../output/point_radius_graphs/Manis_pentadactyla.png'
+#> Error in png(paste(path, var, ".png", sep = ""), width = 600, height = 500, : unable to start png() device
 # Here is an example of a single plot from that command, or how to plot just one
 # graph that is of interest
 egForPlot <-NHM_Pangolins %>% filter(binomial == 'Smutsia_temminckii')
@@ -199,7 +209,11 @@ p = ggplot(data = landMap) +
   theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) +
   theme_bw()
 print(p)
-#> Error in grid.newpage(): could not open file '../output/point_radius_graphs/Manis_pentadactyla.png'
+```
+
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+``` r
 ggsave('../output/figure4a.pdf', p, 'pdf')
 #> Error in grDevices::pdf(file = filename, ..., version = version): cannot open file '../output/figure4a.pdf'
 ```
@@ -294,7 +308,7 @@ fig4 <- gridExtra::grid.arrange(p, p1, ncol=2)
 ggsave('../output/figure4.pdf', fig4, 'pdf', height = 3)
 #> Error in grDevices::pdf(file = filename, ..., version = version): cannot open file '../output/figure4.pdf'
 plotMaps(NHM_Pangolins_hulls, IUCN, path = '../output/convex_hull_graphs/')
-#> Error in grid.newpage(): could not open file '../output/convex_hull_graphs/Smutsia_gigantea.png'
+#> Error in png(paste(path, var, ".png", sep = ""), width = 600, height = 500, : unable to start png() device
 ```
 
 Similarly I can calculate the percentage overlap between convex hulls
@@ -325,8 +339,10 @@ both data sets, as they will tell me something subtly different once
 analysed;
 
 ``` r
-NHM_Pangolins <- calculateCentroidDistance(NHM_Pangolins, IUCN)
-NHM_Pangolins_hulls <- calculateCentroidDistance(NHM_Pangolins_hulls, IUCN)
+NHM_Pangolins <- centroidCentroidDistance(NHM_Pangolins, IUCN)
+#> Error in centroidCentroidDistance(NHM_Pangolins, IUCN): could not find function "centroidCentroidDistance"
+NHM_Pangolins_hulls <- centroidCentroidDistance(NHM_Pangolins_hulls, IUCN)
+#> Error in centroidCentroidDistance(NHM_Pangolins_hulls, IUCN): could not find function "centroidCentroidDistance"
 ```
 
 This returns the NHM data frame with added an added distance column (and
@@ -390,7 +406,9 @@ analysis, which is reducing the data set to a single entry per species;
 ``` r
 myvars <- c('binomial', 'Percent_overlap', 'distance')
 NHM_Pangolins_hulls <- NHM_Pangolins_hulls[myvars]
+#> Error in `[.data.frame`(x, i): undefined columns selected
 NHM_Pangolins_hulls <- unique(NHM_Pangolins_hulls)
+#> Error in lapply(x[i], as.numeric): (list) object cannot be coerced to type 'double'
 myvars <- c('binomial', 'Continent')
 tmp <- NHM_Pangolins[myvars]
 tmp <- st_drop_geometry(tmp)
@@ -450,11 +468,7 @@ p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
   stat_summary(fun.data = 'mean_sdl', fun.args = list(mult=1), geom = 'errorbar', color = 'black', width = 0.2) +
   stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 2)
 dataPlots <- gridExtra::grid.arrange(p, p1, p2, p3, ncol=2)
-```
-
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
-
-``` r
+#> Error in FUN(X[[i]], ...): object 'distance' not found
 ggsave(filename = '../output/figure5.pdf', plot = dataPlots, device = 'pdf')
 #> Error in grDevices::pdf(file = filename, ..., version = version): cannot open file '../output/figure5.pdf'
 ```
