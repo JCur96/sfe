@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
   fig.height=7 
 )
 ```
+https://zenodo.org/badge/193727104.svg
 ## A Walkthrough Guide With a Test Case
 
 ### A Brief Note about Dependencies
