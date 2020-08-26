@@ -16,6 +16,10 @@ knitr::opts_chunk$set(
   fig.height=7 
 )
 ```
+
+
+[![DOI](https://zenodo.org/badge/193727104.svg)](https://zenodo.org/badge/latestdoi/193727104)
+
 # sfe (Simple Features Ecology)
 ## A Walkthrough Guide With a Test Case
 
@@ -130,8 +134,8 @@ NHM_Pangolins$Extent..m. <- (NHM_Pangolins$Extent..m. /1000)
 NHM_Pangolins <- NHM_Pangolins %>% rename(Extent_km = Extent..m.)
 # Here I make a plot to demonstrate how the NHM has been using georeferenced
 # specimens
-egForPlot <-NHM_Pangolins %>% filter(binomial == 'Smutsia_temminckii')
-IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_temminckii')
+egForPlot <-NHM_Pangolins %>% filter(binomial == 'Smutsia_gigantea')
+IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_gigantea')
 bbox <- c(-14.414063,-37.996163,53.613281,27.994401)
 xlim <- c(bbox[1], bbox[3])
 ylim <- c(bbox[2], bbox[4])
@@ -139,16 +143,39 @@ landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>%
   st_union()
 p = ggplot(data = landMap) +
   geom_sf() +
-  geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
-  geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
+  geom_sf(mapping = aes(alpha = 0.5, fill='blue'), size = 3, data = egForPlot , show.legend = F) +
+  geom_sf(mapping = aes(alpha = 0.1, fill = 'red'), data = IUCNForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T) +
   theme_bw()
 print(p)
-ggsave('../output/figure1.pdf', p, 'pdf')
+ggsave('../output/figure1.png', p, 'png')
+dotsForPlot <- egForPlot$geometry
 # I then add error to the plot
 NHM_Pangolins <- addError(NHM_Pangolins)
 # head(NHM_Pangolins)
 ```
+
+# ```{r, message = FALSE, warning = FALSE}
+# bbox <- c(-37.265625,-60.239811,194.062500,81.723188)
+# xlim <- c(bbox[1], bbox[3])
+# ylim <- c(bbox[2], bbox[4])
+# landMap <- rnaturalearth::ne_countries(returnclass = 'sf') %>%
+#   st_union()
+# p1 = ggplot(data = landMap) +
+#   geom_sf() +
+#   geom_sf(mapping = aes(), alpha = 0.6, fill = 'turquoise', data = IUCN, show.legend = F) +
+#   # geom_sf(mapping = aes(), data = NHM_Pangolins , show.legend = F) +
+#   coord_sf(xlim = xlim, ylim = ylim, expand = T) +
+#   theme_dark() +
+#   theme(plot.background = element_rect(fill = 'grey'),
+#         panel.border = element_blank(), 
+#         panel.grid.major = element_blank(),
+#         panel.grid.minor = element_blank(),
+#         axis.ticks = element_blank(),
+#         axis.text = element_blank())
+# print(p1)
+# ggsave('../output/worldMap.png', p1, 'png')
+# ```
 
 At this point I thought it would be useful to explore the data visually, both
 out of interest and to double check that I really was converting point data into
@@ -161,8 +188,8 @@ point-radius data.
 plotMaps(NHM_Pangolins, IUCN, path = '../output/point_radius_graphs/')
 # Here is an example of a single plot from that command, or how to plot just one
 # graph that is of interest
-egForPlot <-NHM_Pangolins %>% filter(binomial == 'Smutsia_temminckii')
-IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_temminckii')
+egForPlot <-NHM_Pangolins %>% filter(binomial == 'Smutsia_gigantea')
+IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_gigantea')
 # puts the coords into the order expected down in ggmap coords
 bbox <- c(-14.414063,-37.996163,53.613281,27.994401)
 xlim <- c(bbox[1], bbox[3])
@@ -173,12 +200,13 @@ p = ggplot(data = landMap) +
   geom_sf() +
   geom_sf(mapping = aes(alpha = 0.5, fill='blue'), data = egForPlot , show.legend = F) +
   geom_sf(mapping = aes(alpha = 0.1, fill = "red"), data = IUCNForPlot, show.legend = F) +
+  geom_sf(mapping = aes(alpha = 0.5, fill = 'black'), data = dotsForPlot, show.legend = F) +
   coord_sf(xlim = xlim, ylim = ylim, expand = T)  +
-  labs(tag = 'a') +
-  theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) +
+  #labs(tag = 'a') +
+  # theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) +
   theme_bw()
 print(p)
-ggsave('../output/figure4a.pdf', p, 'pdf')
+ggsave('../output/figure4a.png', p, 'png')
 
 ```
 
@@ -219,7 +247,7 @@ which can be created and tailored using the following functions;
 # This first function creates convex hulls, without any clipping to landmasses
 NHM_Pangolins_hulls <- makeConvexHulls(NHM_Pangolins_hulls)
 # And this function takes those hulls and clips them to landmasses
-NHM_Pangolins_hulls <- clipHullsToLand(NHM_Pangolins_hulls)
+NHM_Pangolins_hulls <- clipHullsToLand(NHM_Pangolins_hulls) 
 #If you know you want hulls which are clipped to landmasses from the start you
 # can use the following function
 # NHM_Pangolins_hulls <- makeLandClippedHulls(NHM_Pangolins_hulls)
@@ -236,8 +264,8 @@ you don't mind overwriting the previous plots.
 
 ```{r, message = FALSE, warning = FALSE}
 # Here is an example of a single convex hull plot 
-egForPlot <-NHM_Pangolins_hulls %>% filter(binomial == 'Smutsia_temminckii')
-IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_temminckii')
+egForPlot <-NHM_Pangolins_hulls %>% filter(binomial == 'Smutsia_gigantea')
+IUCNForPlot <- IUCN %>% filter(binomial == 'Smutsia_gigantea')
 # puts the coords into the order expected down in ggmap coords
 bbox <- c(-14.414063,-37.996163,53.613281,27.994401)
 xlim <- c(bbox[1], bbox[3])
@@ -281,8 +309,8 @@ be of interest with regards to analysis and modelling, and does not requrie any
 flattening to use. Here I use it on both data sets, as they will tell me something
 subtly different once analysed;
 ```{r, message = FALSE, warning = FALSE}
-NHM_Pangolins <- centroidCentroidDistance(NHM_Pangolins, IUCN)
-NHM_Pangolins_hulls <- centroidCentroidDistance(NHM_Pangolins_hulls, IUCN)
+NHM_Pangolins <- calculateCentroidDistance(NHM_Pangolins, IUCN)
+NHM_Pangolins_hulls <- calculateCentroidDistance(NHM_Pangolins_hulls, IUCN)
 ```
 
 This returns the NHM data frame with added an added distance column (and a
@@ -398,6 +426,38 @@ p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
   stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 2)
 dataPlots <- gridExtra::grid.arrange(p, p1, p2, p3, ncol=2)
 ggsave(filename = '../output/figure5.pdf', plot = dataPlots, device = 'pdf')
+
+
+p <- ggplot(NHM_Pangolins, aes(x=binomial, y=Percent_overlap)) +
+  geom_point(color = 'grey', size = 5) +
+  scale_x_discrete() +
+  xlab('') +
+  ylab('') +
+  theme_bw(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) +
+  stat_summary(fun.data = 'mean_sdl', fun.args = list(mult=1), geom = 'errorbar', color = 'black', width = 0.2) +
+  stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 5)
+print(p)
+ggsave(filename = '../output/percent_overlap.png', p, device = 'png')
+
+p1 <- ggplot(NHM_Pangolins, aes(x=as.numeric(Decade), y=Percent_overlap)) +
+  geom_point(size = 5)+
+  xlab('') +
+  ylab('') +
+  theme_bw(base_size = 14)
+print(p1)
+ggsave(filename = '../output/decade.png', p1, device = 'png')
+
+p3 <- ggplot(NHM_Pangolins_hulls, aes(x=Continent, y=Percent_overlap)) +
+  geom_point(color = 'grey', size = 5) +
+  xlab('') +
+  ylab('') +
+  theme_bw(base_size = 14) +
+  stat_summary(fun.data = 'mean_sdl', fun.args = list(mult=1), geom = 'errorbar', color = 'black', width = 0.2) +
+  stat_summary(fun.y = mean, geom = 'point', color = 'black', size = 5)
+print(p3)
+ggsave(filename = '../output/continent.png', p3, device = 'png')
+
 ```
 To my eye both overlap and centroid-edge distance show species dependent patterns,
 whereas decade doesn't show any strong trends. However, I think it is still worth
@@ -469,3 +529,4 @@ issues with. to do that run `install.packages("rgeos")` in R followed by
 The final dependency you should install previous to trying to use sfe is `devtools`
 This one is easy to install, simply running `install.packages("devtools")` should
 be sufficient.
+
