@@ -1,6 +1,6 @@
 # two input function for calculating the percentage overlap
 calcOverlaps <- function(df1, df2) {
-  df1 <- lwgeom::st_make_valid(df1)
+  df1 <- lwgeom::lwgeom_make_valid(df1)
   # adding additional crs transfroms
   # as for some unknown reason it is convinced that CRS do not match at this point
   df1 <- st_transform(df1, 2163)
