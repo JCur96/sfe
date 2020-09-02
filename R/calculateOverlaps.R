@@ -60,8 +60,8 @@ hullOverFun <- function(df1, df2) {
     # print(geom2)
     # use previous fun to calculate overlaps
     # x <- calcOverlaps(geom, df2$geometry)
-    print(head(df2))
-    x <- calcOverlaps(geom, df2)
+    print(unique(df2))
+    x <- calcOverlaps(geom, unique(df2))
     # and append to the percent overlap col
     # print(row)
     # if (purrr::is_empty(x) == T) {
