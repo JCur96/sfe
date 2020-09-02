@@ -51,6 +51,8 @@ hullOverFun <- function(df1, df2) {
     #df2$geometry[row] = geom2
     #}
   df2 <- st_transform(df2, 2163)
+  print(unique(df2))
+  df3 <- st_as_sf(unique(df2))
   for (row in 1:nrow(df1)) {
     # extract the geometry
     geom <- df1$geometry[row]
@@ -60,8 +62,7 @@ hullOverFun <- function(df1, df2) {
     # print(geom2)
     # use previous fun to calculate overlaps
     # x <- calcOverlaps(geom, df2$geometry)
-    print(unique(df2))
-    x <- calcOverlaps(geom, unique(df2))
+    x <- calcOverlaps(geom, df3)
     # and append to the percent overlap col
     # print(row)
     # if (purrr::is_empty(x) == T) {
