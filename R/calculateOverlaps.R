@@ -37,7 +37,7 @@ hullOverFun <- function(df1, df2) {
   # df1 <- st_as_sf(df1)
   # df1$Percent_overlap <- NULL
   # for each row in first df's geometry col
-  for (row in 1:nrom(df2)) {
+  for (row in 1:nrow(df2)) {
         # repeat transform and sanitization for
     # df2? as I get Null through trying to do
     # that lower for some reason
