@@ -54,9 +54,10 @@ hullOverFun <- function(df1, df2) {
     geom <- df1$geometry[row]
     #geom <- st_set_crs(geom, 2163)
     geom <- st_transform(geom, 2163)
+    geom2 <- df2$geometry
     # use previous fun to calculate overlaps
     # x <- calcOverlaps(geom, df2$geometry)
-    x <- calcOverlaps(geom, df2$geometry)
+    x <- calcOverlaps(geom, geom2)
     # and append to the percent overlap col
     # print(row)
     # if (purrr::is_empty(x) == T) {
