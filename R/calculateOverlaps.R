@@ -46,7 +46,7 @@ hullOverFun <- function(df1, df2) {
     # that lower for some reason
     #geom2 <- df2$geometry[row]
     #geom2 <- st_transform(geom2, 2163)
-    df2 <- st_transform(df2, 2163)
+    df2 <- st_transform(df2$geom, 2163)
     # use previous fun to calculate overlaps
     # x <- calcOverlaps(geom, df2$geometry)
     x <- calcOverlaps(geom, df2$geometry)
