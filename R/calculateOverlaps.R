@@ -56,6 +56,7 @@ hullOverFun <- function(df1, df2) {
     #geom <- st_set_crs(geom, 2163)
     geom <- st_transform(geom, 2163)
     geom2 <- df2$geometry
+    print(geom2)
     # use previous fun to calculate overlaps
     # x <- calcOverlaps(geom, df2$geometry)
     x <- calcOverlaps(geom, geom2)
