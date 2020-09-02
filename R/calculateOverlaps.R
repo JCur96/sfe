@@ -103,7 +103,7 @@ calculateOverlaps <- function(x, y) {
     # ensure planar crs is in use
     NHM_var <- st_transform(NHM_var, 2163)
     IUCN_var <- st_transform(IUCN_var, 2163)
-    print(class(IUCN_var)
+    print(class(IUCN_var))
     # then pass to the over_function
     tmp <- hullOverFun(NHM_var, IUCN_var)
     # rebuilding the input df with a new col
