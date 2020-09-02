@@ -25,7 +25,7 @@
 #' @export
 prepNHMData <- function(x, indexToChange = NULL) {
   suppressMessages(library(dplyr))
-  print(colnames(x))
+  #print(colnames(x))
   if (is.null(indexToChange)) {
     colToChange <- readline(prompt = 'please enter column index to rename to binomial: ')
     colToChange <- as.numeric(colToChange)
