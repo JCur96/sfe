@@ -41,7 +41,14 @@ hullOverFun <- function(df1, df2) {
     geom <- df1$geometry[row]
     #geom <- st_set_crs(geom, 2163)
     geom <- st_transform(geom, 2163)
+    # repeat transform and sanitization for
+    # df2? as I get Null through trying to do
+    # that lower for some reason
+    #geom2 <- df2$geometry[row]
+    #geom2 <- st_transform(geom2, 2163)
+    df2 <- st_transform(df2, 2163)
     # use previous fun to calculate overlaps
+    # x <- calcOverlaps(geom, df2$geometry)
     x <- calcOverlaps(geom, df2$geometry)
     # and append to the percent overlap col
     # print(row)
