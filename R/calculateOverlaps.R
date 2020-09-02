@@ -3,6 +3,7 @@ calcOverlaps <- function(df1, df2) {
   df1 <- lwgeom::lwgeom_make_valid(df1)
   # adding additional crs transfroms
   # as for some unknown reason it is convinced that CRS do not match at this point
+  print("3rd transform")
   df1 <- st_transform(df1, 2163)
   df2 <- st_transform(df2, 2163)
   # gives percentage overlap between NHM and IUCN
@@ -46,6 +47,7 @@ hullOverFun <- function(df1, df2) {
     # that lower for some reason
     #geom2 <- df2$geometry[row]
     #geom2 <- st_transform(geom2, 2163)
+    print("2nd transform")
     df2 <- st_transform(df2$geom, 2163)
     # use previous fun to calculate overlaps
     # x <- calcOverlaps(geom, df2$geometry)
