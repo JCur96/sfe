@@ -37,16 +37,17 @@ hullOverFun <- function(df1, df2) {
   # df1 <- st_as_sf(df1)
   # df1$Percent_overlap <- NULL
   # for each row in first df's geometry col
-  for (row in 1:nrow(df2)) {
-        # repeat transform and sanitization for
-    # df2? as I get Null through trying to do
-    # that lower for some reason
-    geom2 <- df2$geometry[row]
-    geom2 <- st_transform(geom2, 2163)
-    #print("2nd transform")
-    #df2 <- st_transform(df2$geom, 2163)
-    df2$geometry[row] = geom2
-    }
+  #for (row in 1:nrow(df2)) {
+        ## repeat transform and sanitization for
+    ## df2? as I get Null through trying to do
+    ## that lower for some reason
+    #geom2 <- df2$geometry[row]
+    #geom2 <- st_transform(geom2, 2163)
+    ##print("2nd transform")
+    ##df2 <- st_transform(df2$geom, 2163)
+    #df2$geometry[row] = geom2
+    #}
+  df2 = st_transform(df2, 2163)
   for (row in 1:nrow(df1)) {
     # extract the geometry
     geom <- df1$geometry[row]
@@ -103,7 +104,7 @@ calculateOverlaps <- function(x, y) {
     # ensure planar crs is in use
     NHM_var <- st_transform(NHM_var, 2163)
     IUCN_var <- st_transform(IUCN_var, 2163)
-    print(class(IUCN_var))
+    #print(class(IUCN_var))
     # then pass to the over_function
     tmp <- hullOverFun(NHM_var, IUCN_var)
     # rebuilding the input df with a new col
