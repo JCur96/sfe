@@ -1,6 +1,10 @@
 # two input function for calculating the percentage overlap
 calcOverlaps <- function(df1, df2) {
   df1 <- lwgeom::st_make_valid(df1)
+  # adding additional crs transfroms
+  # as for some unknown reason it is convinced that CRS do not match at this point
+  df1 <- st_transform(df1, 2163)
+  df2 <- st_transform(df2, 2163)
   # gives percentage overlap between NHM and IUCN
   overlap <- st_intersection(df1, df2) %>% st_area() / st_area(df1, df2) * 100
   # at this point the output is of class "units" which don't play nice
