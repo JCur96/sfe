@@ -1,7 +1,7 @@
 # two input function for calculating the percentage overlap
 calcOverlaps <- function(df1, df2) {
   df1 <- lwgeom::lwgeom_make_valid(df1)
-  #df2 <- lwgeom::lwgeom_make_valid(df2)
+  df2 <- lwgeom::lwgeom_make_valid(df2)
   # adding additional crs transfroms
   # as for some unknown reason it is convinced that CRS do not match at this point
   print(df2)
@@ -59,7 +59,8 @@ hullOverFun <- function(df1, df2) {
     print(geom2)
     # use previous fun to calculate overlaps
     # x <- calcOverlaps(geom, df2$geometry)
-    x <- calcOverlaps(geom, geom2)
+    print(head(df2))
+    x <- calcOverlaps(geom, df2)
     # and append to the percent overlap col
     # print(row)
     # if (purrr::is_empty(x) == T) {
