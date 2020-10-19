@@ -85,7 +85,7 @@ ReadInAndProcessNHM <- function(NHMDataDir) #rewrite to work with the NHM downlo
   pangolinDfList <- split(NHM_Pangolins, f = NHM_Pangolins$binomial)
   return(invisible(pangolinDfList))
 }
-RunAOHAnalysis <- function(NHMDataDir, AOHDataDir, isIUCN = F)
+RunAOHAnalysis <- function(NHMDataDir, AOHDataDir, isIUCN = F, isTemminckii = F)
 {
   NHMPangolinList <- ReadInAndProcessNHM(NHMDataDir)
   # create a df for overlap data to go to
@@ -97,16 +97,22 @@ RunAOHAnalysis <- function(NHMDataDir, AOHDataDir, isIUCN = F)
   {
     #get the file name ie the species name
     #print(file)
-    # sppName = str_extract(file, regex("\/\\w+\\_"))
-    # print(sppName) \\/\\w+\\_\\w+
-    sppName = str_extract(file, regex("\\/\\w+\\_\\w+"))
-    #sppName = str_extract(file, regex("\\/\\w+\\_"))
-    #print(sppName)
-    sppName = gsub("/", "", sppName)
-    #print(sppName)
-    sppName = gsub("\\_$", "", sppName)
-    #print(sppName)
-    #sapply(NHMPangolinList, function(x) unique(x$binomial))
+    if (isTemminckii == T) {
+      sppName = "Smutsia_temminckii"
+    }
+    else
+    {
+      # sppName = str_extract(file, regex("\/\\w+\\_"))
+      # print(sppName) \\/\\w+\\_\\w+
+      sppName = str_extract(file, regex("\\/\\w+\\_\\w+"))
+      #sppName = str_extract(file, regex("\\/\\w+\\_"))
+      #print(sppName)
+      sppName = gsub("/", "", sppName)
+      #print(sppName)
+      sppName = gsub("\\_$", "", sppName)
+      #print(sppName)
+      #sapply(NHMPangolinList, function(x) unique(x$binomial))
+    }
     # read the file in!
     sppFile = st_read(dsn = file)
     if (isIUCN == T) {
@@ -178,24 +184,17 @@ UnifyOverlapCSVs <- function(OverlapCSVDir) {
   st_write(overlapDf, "../Data/overlaps.csv")
 }
 ### main ###
-RunAOHAnalysis("../Data/NHM_all_pangolins.csv", "../Data/shpFiles")
+dir <- list.dirs("../Data/temminckiiShpFiles")
+for (folder in dir) {
+  RunAOHAnalysis("../Data/NHM_all_pangolins.csv", folder, isTemminckii = T)
+  file.copy(from = "../Data/overlaps_Smutsia_temminckii.csv",
+            to   = paste(folder, "overlaps_Smutsia_temminckii.csv"))
+  file.remove("../Data/overlaps_Smutsia_temminckii.csv")
+}
+RunAOHAnalysis("../Data/NHM_all_pangolins.csv", "../Data/temminckiiShpFiles")
 ## arsehole computer decided to update overnight so halted progress. Thankfully
 ## got Manis crassicaudata and Manis javanica and their landuse done, so will
 ## run again excluding those.
-UnifyOverlapCSVs("../Data")
-overlaps <- st_read("../Data/overlaps.csv")
-NHM <- st_read("../Data/NHM_all_pangolins.csv")
-NHMPlusOverlaps <- merge(NHM, overlaps, "X_id")
-NHMPlusOverlaps <- NHMPlusOverlaps %>% dplyr::distinct(X_id, .keep_all = T)
-# need to more thoroughly filter these but hey ho
-toDrop <- c("binomial.x", "percentOverlap")
-NHMPlusOverlaps <- NHMPlusOverlaps[,!names(NHMPlusOverlaps) %in% toDrop]
-st_write(NHMPlusOverlaps, "../Data/NHMOverlaps.csv")
-
-#### re-running with IUCN 2019 maps ####
-## should work in theory, would be nice to have the comparison
-## plus need temminckii
-RunAOHAnalysis("../Data/NHM_all_pangolins.csv", "../Data/IUCN", isIUCN = T)
-# NHM <- st_read("../Data/NHM_all_pangolins.csv")
-# NHMPangolinList <- ReadInAndProcessNHM("../Data/NHM_all_pangolins.csv")
-UnifyOverlapCSVs("../Data")
+dir("../Data/temminckiiShpFiles/")
+files <- list.files("../Data/temminckiiShpFiles", recursive = T, include.dirs = T)
+list.dirs("./Data/temminckiiShpFiles")
