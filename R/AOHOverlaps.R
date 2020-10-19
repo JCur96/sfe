@@ -1,6 +1,6 @@
 #### Minimalist AOH overlap calculation script ####
 
-## libraries ## 
+## libraries ##
 library(rgdal)
 library(sf)
 library(ggplot2)
@@ -76,41 +76,50 @@ ReadInAndProcessNHM <- function(NHMDataDir) #rewrite to work with the NHM downlo
   NHM_Pangolins <- st_make_valid(NHM_Pangolins)
   #temFrame <- subset(NHM_Pangolins, binomial == 'Smutsia_temminckii') # dont need these in this fun as this is just for non-tem
   #temFrame <- NHM_Pangolins[NHM_Pangolins$binomial == '*temminckii']
-  NHM_Pangolins <- NHM_Pangolins[NHM_Pangolins$binomial != 'Smutsia_temminckii', ]
+  ##NHM_Pangolins <- NHM_Pangolins[NHM_Pangolins$binomial != 'Smutsia_temminckii', ]
   ## temp addition, to run from where left off
-  ## could be a lot fancier and add as input args, but this is quick 
-  NHM_Pangolins <- NHM_Pangolins[NHM_Pangolins$binomial != 'Manis_crassicaudata', ] ## tmp comment out after run
-  NHM_Pangolins <- NHM_Pangolins[NHM_Pangolins$binomial != 'Manis_javainca', ] ## tmp comment out after run
+  ## could be a lot fancier and add as input args, but this is quick
+  ##NHM_Pangolins <- NHM_Pangolins[NHM_Pangolins$binomial != 'Manis_crassicaudata', ] ## tmp comment out after run
+  ##NHM_Pangolins <- NHM_Pangolins[NHM_Pangolins$binomial != 'Manis_javainca', ] ## tmp comment out after run
   ##head(NHM_Pangolins)
   pangolinDfList <- split(NHM_Pangolins, f = NHM_Pangolins$binomial)
   return(invisible(pangolinDfList))
 }
-RunAOHAnalysis <- function(NHMDataDir, AOHDataDir) 
+RunAOHAnalysis <- function(NHMDataDir, AOHDataDir, isIUCN = F)
 {
   NHMPangolinList <- ReadInAndProcessNHM(NHMDataDir)
-  # create a df for overlap data to go to 
+  # create a df for overlap data to go to
   # as we will discard the loaded geometry after each species otherwise memory
   # will run out
   # overlapDf = data.frame(binomial=as.character(), Percent_overlap=double(), binomial_overlap=as.integer()) # or something like that
   AOHFileList = list.files(path = AOHDataDir, pattern = "*.shp", full.names = TRUE)
-  for (file in AOHFileList) 
+  for (file in AOHFileList)
   {
     #get the file name ie the species name
     #print(file)
     # sppName = str_extract(file, regex("\/\\w+\\_"))
-    # print(sppName)
-    sppName = str_extract(file, regex("\\/\\w+\\_"))
+    # print(sppName) \\/\\w+\\_\\w+
+    sppName = str_extract(file, regex("\\/\\w+\\_\\w+"))
+    #sppName = str_extract(file, regex("\\/\\w+\\_"))
     #print(sppName)
     sppName = gsub("/", "", sppName)
+    print(sppName)
     sppName = gsub("\\_$", "", sppName)
-    #print(sppName)
+    print(sppName)
     #sapply(NHMPangolinList, function(x) unique(x$binomial))
     # read the file in!
     sppFile = st_read(dsn = file)
+    if (isIUCN == T) {
+      # change BINOMIAL to binomial
+      names(file)[names(file) == "BINOMIAL"] <- "binomial"
+    }
+    else
+    {
+      names(sppFile)[1] <- 'binomial'
+    }
     # pass it to this little pipline
-    names(sppFile)[1] <- 'binomial'
     sppFile$binomial <- sppName
-    sppFile <- 
+    sppFile <-
       sppFile %>%
       st_as_sf() %>%
       st_union()## %>%
@@ -121,7 +130,10 @@ RunAOHAnalysis <- function(NHMDataDir, AOHDataDir)
     for (item in NHMPangolinList) {
       #print(unique(item$binomial))
       Spp <- unique(item$binomial)
+      #print(class(sppName))
       #print(Spp)
+      #print(sppName)
+      #print(unique(item$binomial))
       if (unique(item$binomial) == sppName) {
         #print('match')
         #item <- st_transform(item, 4326)
@@ -139,7 +151,7 @@ RunAOHAnalysis <- function(NHMDataDir, AOHDataDir)
           print('file already exists, this run is likely for just land use!')
           newFileName <- paste("../Data/overlaps_", sppName, "_landUse", ".csv", sep = "")
           st_write(overlaps, newFileName)
-        } 
+        }
         if (!file.exists(fullFilePath)) {
           st_write(overlaps, paste("../Data/overlaps_", sppName, ".csv", sep = ""))
         }
@@ -154,7 +166,7 @@ UnifyOverlapCSVs <- function(OverlapCSVDir) {
   OverlapFileList = list.files(path = OverlapCSVDir, pattern = "*overlaps_", full.names = TRUE)
   #print(OverlapFileList)
   #make a data frame here
-  overlapDf = data.frame(binomial=as.character(), Percent_overlap=double(), binomial_overlap=as.integer()) 
+  overlapDf = data.frame(binomial=as.character(), Percent_overlap=double(), binomial_overlap=as.integer())
   for (file in OverlapFileList) {
     csvObj <- read.csv(file, header=T)
     #append/rbind/whatever it is in R to the made DF here
@@ -164,7 +176,7 @@ UnifyOverlapCSVs <- function(OverlapCSVDir) {
 }
 ### main ###
 RunAOHAnalysis("../Data/NHM_all_pangolins.csv", "../Data/shpFiles")
-## arsehole computer decided to update overnight so halted progress. Thankfully 
+## arsehole computer decided to update overnight so halted progress. Thankfully
 ## got Manis crassicaudata and Manis javanica and their landuse done, so will
 ## run again excluding those.
 UnifyOverlapCSVs("../Data")
@@ -172,3 +184,17 @@ overlaps <- st_read("../Data/overlaps.csv")
 NHM <- st_read("../Data/NHM_all_pangolins.csv")
 NHMPlusOverlaps <- merge(NHM, overlaps, "X_id")
 NHMPlusOverlaps <- NHMPlusOverlaps %>% dplyr::distinct(X_id, .keep_all = T)
+# need to more thoroughly filter these but hey ho
+toDrop <- c("binomial.x", "percentOverlap")
+NHMPlusOverlaps <- NHMPlusOverlaps[,!names(NHMPlusOverlaps) %in% toDrop]
+st_write(NHMPlusOverlaps, "../Data/NHMOverlaps.csv")
+
+#### re-running with IUCN 2019 maps ####
+## should work in theory, would be nice to have the comparison
+## plus need temminckii
+RunAOHAnalysis("../Data/NHM_all_pangolins.csv", "../Data/IUCN", isIUCN = T)
+NHM <- st_read("../Data/NHM_all_pangolins.csv")
+NHMPangolinList <- ReadInAndProcessNHM("../Data/NHM_all_pangolins.csv")
+#IUCN <- st_read("../Data/IUCN/Manis_pentadactyla.shp")
+#names(IUCN)[names(IUCN) == "BINOMIAL"] <- "binomial" ##works here but not for the function
+#IUCN$binomial <- gsub(' ', '_', IUCN$binomial)
